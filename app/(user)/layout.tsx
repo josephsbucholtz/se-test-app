@@ -29,7 +29,7 @@ export default async function UserLayout({
               <NavigationMenuList className="gap-2">
                 <NavigationMenuItem>
                     <Link
-                      href="/typing"
+                      href="/home"
                       className="rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
                     >
                       Typing
@@ -47,10 +47,10 @@ export default async function UserLayout({
 
                 <NavigationMenuItem>
                     <Link
-                      href="/about"
+                      href="/developers-notes"
                       className="rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
                     >
-                      About
+                      Developer's Notes
                     </Link>
                 </NavigationMenuItem>
               </NavigationMenuList>
