@@ -1,13 +1,5 @@
 export const dynamic = "force-dynamic";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 export default function Home() {
   const snippet = {
     title: "Binary Tree Level Order Traversal",
@@ -36,7 +28,7 @@ def level_order(root):
   };
 
   return (
-    <main className="px-4 py-12">
+    <main className="px-4 py-2">
       {/* Header */}
       <div className="flex items-start justify-between ">
         <div>
@@ -47,26 +39,14 @@ def level_order(root):
           </p>
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2">
-          <Select defaultValue={snippet.language}>
-            <SelectTrigger className="w-48">
-              <SelectValue />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="python">Python</SelectItem>
-              <SelectItem value="java">Java</SelectItem>
-              <SelectItem value="cpp">C++</SelectItem>
-              <SelectItem value="javascript">JavaScript</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
       </div>
 
       {/* Code */}
-      <pre className="mt-16 whitespace-pre-wrap font-mono text-xl leading-9 text-muted-foreground">
+      <div className=" flex justify-center">
+      <pre className="mt-6 whitespace-pre-wrap font-mono text-xl leading-9 text-muted-foreground">
         <code>{snippet.code}</code>
       </pre>
+      </div>
     </main>
   );
 }
