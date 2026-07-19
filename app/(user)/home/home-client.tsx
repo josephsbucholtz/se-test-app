@@ -2,12 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { typing_snippets } from "@prisma/client";
+import Grade from "./grade";
 
 export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
   const code = snippet.code || "";
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [typed, setTyped] = useState<string[]>([]);
+  const [finished, setFinished] = useState(false);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [endTime, setEndTime] = useState<number | null>(null);
 
   const charRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const caretRef = useRef<HTMLDivElement>(null);
@@ -16,6 +20,18 @@ export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       e.preventDefault();
+
+      if (typed.length === 0) {
+        setStartTime(Date.now());
+      }
+
+      if (finished) {
+        if (e.key === "Enter") {
+          window.location.reload();
+        }
+
+        return;
+      }
 
       if (e.key === "Backspace" && e.ctrlKey) {
         setTyped((prev) => {
@@ -62,13 +78,23 @@ export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
 
       setTyped((prev) => [...prev, key]);
 
-      setCurrentIndex((prev) => Math.min(prev + 1, code.length - 1));
+      setCurrentIndex((prev) => {
+        const next = prev + 1;
+
+        if (next >= code.length) {
+          setEndTime(Date.now());
+          setFinished(true);
+          return code.length;
+        }
+
+        return next;
+      });
     }
 
     window.addEventListener("keydown", handleKeyDown);
 
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [code.length]);
+  }, [code.length, finished, typed.length]);
 
   useEffect(() => {
     const active = charRefs.current[currentIndex];
@@ -83,6 +109,15 @@ export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
     caret.style.top = `${rect.top - parentRect.top}px`;
     caret.style.height = `${rect.height}px`;
   }, [currentIndex]);
+
+  const elapsed = startTime && endTime ? (endTime - startTime) / 1000 : 0;
+
+  const correct = typed.filter((c, i) => c === code[i]).length;
+
+  const accuracy =
+    typed.length === 0 ? 100 : Math.round((correct / typed.length) * 100);
+
+  const wpm = elapsed === 0 ? 0 : ((correct / 5 / elapsed) * 60).toFixed(1);
 
   return (
     <main className="px-4 py-2">
@@ -117,6 +152,13 @@ export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
             ))}
           </pre>
         </div>
+        {finished && (
+          <Grade
+            wpm={wpm.toString()}
+            accuracy={accuracy}
+            time={elapsed.toFixed(2)}
+          />
+        )}
       </div>
     </main>
   );

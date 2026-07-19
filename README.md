@@ -18,6 +18,8 @@ TailWindCSS
 Eslint
 Supabase
 Prisma
+Shadcn
+Lucid-React
 
 ## Deploy on Vercel
 
