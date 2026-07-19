@@ -1,0 +1,123 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { typing_snippets } from "@prisma/client";
+
+export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
+  const code = snippet.code || "";
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [typed, setTyped] = useState<string[]>([]);
+
+  const charRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const caretRef = useRef<HTMLDivElement>(null);
+
+  // Listen for keystrokes
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      e.preventDefault();
+
+      if (e.key === "Backspace" && e.ctrlKey) {
+        setTyped((prev) => {
+          const next = [...prev];
+
+          if (next.length === 0) return next;
+
+          if (/\s/.test(next[next.length - 1])) {
+            while (next.length > 0 && /\s/.test(next[next.length - 1])) {
+              next.pop();
+            }
+          } else {
+            // Otherwise delete the previous word.
+            while (next.length > 0 && !/\s/.test(next[next.length - 1])) {
+              next.pop();
+            }
+          }
+
+          setCurrentIndex(next.length);
+
+          return next;
+        });
+
+        return;
+      }
+
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+      if (e.key === "Backspace") {
+        setTyped((prev) => prev.slice(0, -1));
+        setCurrentIndex((prev) => Math.max(prev - 1, 0));
+        return;
+      }
+
+      if (e.key === "Tab") {
+        setTyped((prev) => [...prev, " ", " ", " ", " "]);
+        setCurrentIndex((prev) => Math.min(prev + 4, code.length));
+        return;
+      }
+
+      if (!(e.key.length === 1 || e.key === "Enter")) return;
+
+      const key = e.key === "Enter" ? "\n" : e.key;
+
+      setTyped((prev) => [...prev, key]);
+
+      setCurrentIndex((prev) => Math.min(prev + 1, code.length - 1));
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [code.length]);
+
+  useEffect(() => {
+    const active = charRefs.current[currentIndex];
+    const caret = caretRef.current;
+
+    if (!active || !caret) return;
+
+    const rect = active.getBoundingClientRect();
+    const parentRect = active.parentElement!.getBoundingClientRect();
+
+    caret.style.left = `${rect.left - parentRect.left}px`;
+    caret.style.top = `${rect.top - parentRect.top}px`;
+    caret.style.height = `${rect.height}px`;
+  }, [currentIndex]);
+
+  return (
+    <main className="px-4 py-2">
+      <h1 className="text-3xl font-bold">{snippet.title}</h1>
+      <p className="text-muted-foreground">{snippet.pattern}</p>
+
+      <div className="mt-10 flex justify-center">
+        <div className="relative">
+          {/* Caret */}
+          <div
+            ref={caretRef}
+            className="absolute w-[2px] bg-yellow-400 transition-all duration-75"
+          />
+
+          <pre className="whitespace-pre-wrap font-mono text-xl leading-9">
+            {code.split("").map((char, index) => (
+              <span
+                key={index}
+                ref={(el) => {
+                  charRefs.current[index] = el;
+                }}
+                className={
+                  index >= typed.length
+                    ? "text-gray-400"
+                    : typed[index] === char
+                    ? "text-muted-foreground"
+                    : "text-red-500 underline decoration-red-500"
+                }
+              >
+                {char}
+              </span>
+            ))}
+          </pre>
+        </div>
+      </div>
+    </main>
+  );
+}
