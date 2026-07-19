@@ -3,18 +3,42 @@
 import { useEffect, useRef, useState } from "react";
 import { typing_snippets } from "@prisma/client";
 import Grade from "./grade";
+import { getRandomSnippet } from "./actions";
 
 export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
-  const code = snippet.code || "";
+  const [currentSnippet, setCurrentSnippet] = useState(snippet);
+  const code = currentSnippet.code || "";
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [typed, setTyped] = useState<string[]>([]);
   const [finished, setFinished] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [endTime, setEndTime] = useState<number | null>(null);
+  const [loadingNext, setLoadingNext] = useState(false);
 
   const charRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const caretRef = useRef<HTMLDivElement>(null);
+
+  async function loadNextSnippet() {
+    if (loadingNext) return;
+
+    setLoadingNext(true);
+
+    try {
+      const next = await getRandomSnippet();
+
+      charRefs.current = [];
+
+      setCurrentSnippet(next);
+      setCurrentIndex(0);
+      setTyped([]);
+      setFinished(false);
+      setStartTime(null);
+      setEndTime(null);
+    } finally {
+      setLoadingNext(false);
+    }
+  }
 
   // Listen for keystrokes
   useEffect(() => {
@@ -27,7 +51,7 @@ export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
 
       if (finished) {
         if (e.key === "Enter") {
-          window.location.reload();
+          loadNextSnippet();
         }
 
         return;
@@ -94,7 +118,7 @@ export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
     window.addEventListener("keydown", handleKeyDown);
 
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [code.length, finished, typed.length]);
+  }, [code.length, finished, typed.length, loadingNext]);
 
   useEffect(() => {
     const active = charRefs.current[currentIndex];
@@ -121,8 +145,8 @@ export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
 
   return (
     <main className="px-4 py-2">
-      <h1 className="text-3xl font-bold">{snippet.title}</h1>
-      <p className="text-muted-foreground">{snippet.pattern}</p>
+      <h1 className="text-3xl font-bold">{currentSnippet.title}</h1>
+      <p className="text-muted-foreground">{currentSnippet.pattern}</p>
 
       <div className="mt-10 flex justify-center">
         <div className="relative">
