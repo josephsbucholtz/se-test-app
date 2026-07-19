@@ -1,10 +1,10 @@
 "use server";
 
-import { getSnippet } from "./actions";
+import { getRandomSnippet, getSnippet } from "./actions";
 import HomeClient from "./home-client";
 
 export default async function Home() {
-  const snippet = await getSnippet();
+  const snippet = await getRandomSnippet();
 
   return (
     <HomeClient snippet={snippet!}/>
