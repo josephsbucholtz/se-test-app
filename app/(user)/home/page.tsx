@@ -30,9 +30,34 @@ def level_order(root):
   // Listen for keystrokes
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.ctrlKey || e.metaKey || e.altKey) return;
-
       e.preventDefault();
+
+      if (e.key === "Backspace" && e.ctrlKey) {
+        setTyped((prev) => {
+          const next = [...prev];
+
+          if (next.length === 0) return next;
+
+          if (/\s/.test(next[next.length - 1])) {
+            while (next.length > 0 && /\s/.test(next[next.length - 1])) {
+              next.pop();
+            }
+          } else {
+            // Otherwise delete the previous word.
+            while (next.length > 0 && !/\s/.test(next[next.length - 1])) {
+              next.pop();
+            }
+          }
+
+          setCurrentIndex(next.length);
+
+          return next;
+        });
+
+        return;
+      }
+
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
 
       if (e.key === "Backspace") {
         setTyped((prev) => prev.slice(0, -1));
@@ -96,10 +121,10 @@ def level_order(root):
                 }}
                 className={
                   index >= typed.length
-                  ? "text-gray-400"
-                  : typed[index] === char
-                  ? "text-muted-foreground"
-                  : "text-red-500 underline decoration-red-500"
+                    ? "text-gray-400"
+                    : typed[index] === char
+                    ? "text-muted-foreground"
+                    : "text-red-500 underline decoration-red-500"
                 }
               >
                 {char}
