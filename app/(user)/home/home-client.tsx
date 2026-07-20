@@ -40,6 +40,15 @@ export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
     }
   }
 
+  function reset() {
+      charRefs.current = [];
+      setCurrentIndex(0);
+      setTyped([]);
+      setFinished(false);
+      setStartTime(null);
+      setEndTime(null);
+  }
+
   // Listen for keystrokes
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -54,6 +63,12 @@ export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
           loadNextSnippet();
         }
 
+        return;
+      }
+
+      // RESET ON ESCAPE FOR THE TIME BEING
+      if (e.key === "Escape") {
+        reset();
         return;
       }
 
