@@ -72,6 +72,7 @@ export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
         return;
       }
 
+      //Backspace + Ctrl to delete previous word
       if (e.key === "Backspace" && e.ctrlKey) {
         setTyped((prev) => {
           const next = [...prev];
@@ -147,6 +148,22 @@ export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
     caret.style.left = `${rect.left - parentRect.left}px`;
     caret.style.top = `${rect.top - parentRect.top}px`;
     caret.style.height = `${rect.height}px`;
+
+    // Auto-scroll when the caret nears the bottom of the viewport
+    const buffer = 300; 
+    const viewportHeight = window.innerHeight;
+
+    if (rect.bottom > viewportHeight - buffer) {
+      window.scrollBy({
+        top: rect.bottom - (viewportHeight - buffer * 2),
+        behavior: "smooth",
+      });
+    } else if (rect.top < buffer) {
+      window.scrollBy({
+        top: rect.top - buffer,
+        behavior: "smooth",
+      });
+    }
   }, [currentIndex]);
 
   const elapsed = startTime && endTime ? (endTime - startTime) / 1000 : 0;

@@ -9,18 +9,25 @@ datasource db {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model typing_snippets {
-  id       BigInt         @id(map: "code_snippets_pkey") @default(autoincrement())
-  title    String
-  code     String?        @default("")
-  language code_language?
-  pattern  String?
+  id         BigInt         @id(map: "code_snippets_pkey") @default(autoincrement())
+  title      String
+  code       String?        @default("")
+  language   code_language?
+  pattern    String?
+  difficulty difficulty?
 }
 
 /// This enum is commented in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 enum code_language {
   python
   java
-  c__        @map("c++")
+  cpp
   javascript
   typescript
+}
+
+enum difficulty {
+  easy
+  medium
+  hard
 }
