@@ -17,7 +17,7 @@ export default async function UserLayout({
         <div className="relative mx-auto flex h-16 max-w-7xl items-center px-6">
           {/* App Title */}
           <Link
-            href="/"
+            href="/home"
             className="text-xl font-bold tracking-tight"
           >
             Software Typing
@@ -29,10 +29,19 @@ export default async function UserLayout({
               <NavigationMenuList className="gap-2">
                 <NavigationMenuItem>
                     <Link
-                      href="/home"
+                      href="/typing"
                       className="rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
                     >
                       Typing
+                    </Link>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                    <Link
+                      href="/testing"
+                      className="rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+                    >
+                      Testing
                     </Link>
                 </NavigationMenuItem>
 

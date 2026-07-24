@@ -5,7 +5,7 @@ import { typing_snippets } from "@prisma/client";
 import Grade from "./grade";
 import { getRandomSnippet } from "./actions";
 
-export default function HomeClient({ snippet }: { snippet: typing_snippets }) {
+export default function TypingClient({ snippet }: { snippet: typing_snippets }) {
   const [currentSnippet, setCurrentSnippet] = useState(snippet);
   const code = currentSnippet.code || "";
 
