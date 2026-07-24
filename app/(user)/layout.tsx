@@ -20,7 +20,7 @@ export default async function UserLayout({
             href="/home"
             className="text-xl font-bold tracking-tight"
           >
-            Software Typing
+            Software Practice
           </Link>
 
           {/* Center Navigation */}
