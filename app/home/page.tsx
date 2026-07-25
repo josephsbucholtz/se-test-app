@@ -7,14 +7,14 @@ const features = [
     description:
       "Practice typing real code snippets and improve your speed and accuracy.",
     href: "/typing",
-    image: "/public/typing-page-image.png",
+    image: "/Screenshot 2026-07-23 232035.png",
   },
   {
     title: "Pattern Recognition",
     description:
       "Understand problems and the patterns associated with them.",
     href: "/testing",
-    image: "/public/typing-page-image.png",
+    image: "/public",
   },
 ];
 

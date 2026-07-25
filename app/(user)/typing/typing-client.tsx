@@ -5,7 +5,11 @@ import { typing_snippets } from "@prisma/client";
 import Grade from "./grade";
 import { getRandomSnippet } from "./actions";
 
-export default function TypingClient({ snippet }: { snippet: typing_snippets }) {
+export default function TypingClient({
+  snippet,
+}: {
+  snippet: typing_snippets;
+}) {
   const [currentSnippet, setCurrentSnippet] = useState(snippet);
   const code = currentSnippet.code || "";
 
@@ -41,12 +45,12 @@ export default function TypingClient({ snippet }: { snippet: typing_snippets }) 
   }
 
   function reset() {
-      charRefs.current = [];
-      setCurrentIndex(0);
-      setTyped([]);
-      setFinished(false);
-      setStartTime(null);
-      setEndTime(null);
+    charRefs.current = [];
+    setCurrentIndex(0);
+    setTyped([]);
+    setFinished(false);
+    setStartTime(null);
+    setEndTime(null);
   }
 
   // Listen for keystrokes
@@ -70,6 +74,11 @@ export default function TypingClient({ snippet }: { snippet: typing_snippets }) 
       if (e.key === "Escape") {
         reset();
         return;
+      }
+
+      //Shift + Tab to skip this snippet
+      if (e.key === "Tab" && e.shiftKey) {
+        loadNextSnippet();
       }
 
       //Backspace + Ctrl to delete previous word
@@ -150,7 +159,7 @@ export default function TypingClient({ snippet }: { snippet: typing_snippets }) 
     caret.style.height = `${rect.height}px`;
 
     // Auto-scroll when the caret nears the bottom of the viewport
-    const buffer = 300; 
+    const buffer = 300;
     const viewportHeight = window.innerHeight;
 
     if (rect.bottom > viewportHeight - buffer) {
@@ -188,7 +197,7 @@ export default function TypingClient({ snippet }: { snippet: typing_snippets }) 
             className="absolute w-[2px] bg-yellow-400 transition-all duration-75"
           />
 
-          <pre className="whitespace-pre-wrap font-mono text-xl leading-9">
+          <pre className="whitespace-pre-wrap font-mono text-3xl leading-9">
             {code.split("").map((char, index) => (
               <span
                 key={index}
@@ -215,6 +224,39 @@ export default function TypingClient({ snippet }: { snippet: typing_snippets }) 
             time={elapsed.toFixed(2)}
           />
         )}
+      </div>
+      <div className="fixed right-12 top-1/3 hidden -translate-y-1/2 opacity-60 transition-opacity hover:opacity-100 lg:block">
+        <h2 className="text-center mb-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground/70">
+          Shortcuts
+        </h2>
+
+        <div className="space-y-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1">
+              <kbd className="rounded border px-2 py-1 text-xs">Shift</kbd>
+              <span>+</span>
+              <kbd className="rounded border px-2 py-1 text-xs">Tab</kbd>
+            </div>
+
+            <span className="text-left">Next snippet</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1">
+              <kbd className="rounded border px-2 py-1 text-xs">Ctrl</kbd>
+              <span>+</span>
+              <kbd className="rounded border px-2 py-1 text-xs">Backspace</kbd>
+            </div>
+
+            <span>Delete previous word</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <kbd className="rounded border px-2 py-1 text-xs">Esc</kbd>
+
+            <span>Reset test</span>
+          </div>
+        </div>
       </div>
     </main>
   );
