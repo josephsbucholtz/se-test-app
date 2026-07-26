@@ -96,34 +96,6 @@ export default function TestingClient({
 
   return (
     <main className="h-screen overflow-hidden bg-background text-foreground">
-      <header className="flex h-14 items-center justify-between border-b border-border px-4">
-        <div className="flex min-w-0 items-center gap-3">
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-foreground font-mono text-sm font-bold text-background">
-            ST
-          </div>
-
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold">
-              Pattern Recognition
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Identify the approach quickly
-            </p>
-          </div>
-        </div>
-
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={resetAnswer}
-          className="gap-2 text-muted-foreground"
-        >
-          <RotateCcw className="size-4" />
-          Reset
-        </Button>
-      </header>
-
       <div className="grid h-[calc(100vh-3.5rem)] lg:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)]">
         <section className="min-h-0 border-b border-border lg:border-b-0 lg:border-r">
           <ScrollArea className="h-full">
@@ -195,21 +167,6 @@ export default function TestingClient({
 
         <aside className="min-h-0 bg-muted/20">
           <div className="flex h-full flex-col">
-            <div className="border-b border-border px-6 py-5">
-              <div className="flex items-center gap-2">
-                <Lightbulb className="size-5 text-muted-foreground" />
-
-                <h2 className="font-semibold">
-                  Identify the pattern
-                </h2>
-              </div>
-
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                Enter the main algorithmic pattern or topic you would use
-                to solve this problem.
-              </p>
-            </div>
-
             <div className="flex flex-1 items-center justify-center p-6">
               <div className="w-full max-w-md">
                 <form onSubmit={checkAnswer} className="space-y-4">
@@ -293,17 +250,6 @@ export default function TestingClient({
                     </div>
                   )}
 
-                  {result === null && (
-                    <div className="flex gap-3 text-muted-foreground">
-                      <CircleHelp className="mt-0.5 size-5 shrink-0" />
-
-                      <p className="text-sm leading-6">
-                        Think about the data structure, traversal method,
-                        and whether the problem asks for a contiguous
-                        range, ordering, lookup, or optimization.
-                      </p>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
