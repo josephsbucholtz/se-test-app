@@ -1,8 +1,12 @@
+"use server"
 
-export default function Testing() {
+import { getProblem } from "./actions";
+import TestingClient from "./testing-client";
+
+export default async function Testing() {
+  const problem = await getProblem();
+
   return (
-    <main className="flex min-h-screen items-center justify-center px-4 py-16">
-        <h1>Work in Progress</h1>
-    </main>
+    <TestingClient problem={problem} />
   );
 }
