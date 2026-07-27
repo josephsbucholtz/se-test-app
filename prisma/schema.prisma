@@ -29,6 +29,28 @@ model problems {
   constraints  String?
 }
 
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model problems_leetcode {
+  id                BigInt  @id
+  title             String?
+  description       String?
+  is_premium        BigInt?
+  difficulty        String?
+  solution_link     String?
+  acceptance_rate   Float?
+  frequency         Float?
+  url               String?
+  accepted          String?
+  submissions       String?
+  companies         String?
+  related_topics    String?
+  likes             BigInt?
+  dislikes          BigInt?
+  rating            BigInt?
+  asked_by_faang    BigInt?
+  similar_questions String?
+}
+
 /// This enum is commented in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 enum code_language {
   python
