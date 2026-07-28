@@ -94,6 +94,21 @@ export default function TestingClient({
     setAttempts(0);
   };
 
+  function renderDescription(description: string) {
+    return description.split("`").map((part, index) =>
+      index % 2 === 0 ? (
+        part
+      ) : (
+        <code
+          key={index}
+          className="mx-1 rounded-md border bg-muted px-2 py-1 font-mono text-sm"
+        >
+        {part}
+        </code>
+      )
+    );
+  }
+
   return (
     <main className="h-screen overflow-hidden bg-background text-foreground">
       <div className="grid h-[calc(100vh-3.5rem)] lg:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)]">
@@ -108,9 +123,6 @@ export default function TestingClient({
                   {problem.difficulty ?? "Unknown"}
                 </Badge>
 
-                <Badge variant="secondary">
-                  Problem
-                </Badge>
               </div>
 
               <h1 className="text-2xl font-semibold tracking-tight">
@@ -125,8 +137,7 @@ export default function TestingClient({
                 </h2>
 
                 <div className="whitespace-pre-wrap text-[15px] leading-7">
-                  {problem.description ??
-                    "No description has been provided for this problem."}
+                    {renderDescription(problem.description ?? "No description has been provided for this problem.")}
                 </div>
               </section>
 
