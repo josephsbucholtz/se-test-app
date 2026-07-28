@@ -14,7 +14,7 @@ const features = [
     description:
       "Understand problems and the patterns associated with them.",
     href: "/testing",
-    image: "/public",
+    image: "/TestingFeature.png",
   },
 ];
 
