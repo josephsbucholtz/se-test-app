@@ -1,12 +1,14 @@
 "use server"
 
-import { getProblem } from "./actions";
+import { getProblem, getRandomProblem } from "./actions";
 import TestingClient from "./testing-client";
 
 export default async function Testing() {
   const problem = await getProblem();
 
+  const randomProblem = await getRandomProblem();
+
   return (
-    <TestingClient problem={problem} />
+    <TestingClient problem={randomProblem} />
   );
 }
