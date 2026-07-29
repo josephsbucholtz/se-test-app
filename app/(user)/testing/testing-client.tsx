@@ -2,7 +2,11 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import type { problems } from "@prisma/client";
-import { CheckCircle2, CircleHelp, Lightbulb, RotateCcw, XCircle, } from "lucide-react";
+import {
+  CheckCircle2,
+  RotateCcw,
+  XCircle,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -52,6 +56,25 @@ function getDifficultyClasses(
   }
 }
 
+function renderInlineCode(text: string) {
+  return text.split("`").map((part, index) => {
+    const isCode = index % 2 === 1;
+
+    if (!isCode) {
+      return part;
+    }
+
+    return (
+      <code
+        key={index}
+        className="mx-1 inline rounded-md border border-border bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground"
+      >
+        {part}
+      </code>
+    );
+  });
+}
+
 export default function TestingClient({
   problem,
 }: TestingClientProps) {
@@ -64,7 +87,9 @@ export default function TestingClient({
     [problem.pattern],
   );
 
-  const checkAnswer = (event: FormEvent<HTMLFormElement>) => {
+  const checkAnswer = (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
 
     const normalizedAnswer = normalizeAnswer(answer);
@@ -88,164 +113,157 @@ export default function TestingClient({
     setAttempts(0);
   };
 
-  function renderDescription(description: string) {
-    return description.split("`").map((part, index) =>
-      index % 2 === 0 ? (
-        part
-      ) : (
-        <code
-          key={index}
-          className="mx-1 rounded-md border bg-muted px-2 py-1 font-mono text-sm"
-        >
-        {part}
-        </code>
-      )
-    );
-  }
+return (
+  <main className="h-screen w-full overflow-hidden bg-background text-foreground">
+    <div className="grid h-full w-full lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <section className="min-h-0 w-full border-b border-border lg:border-b-0 lg:border-r">
+        <ScrollArea className="h-full w-full">
+          <div className="w-full py-6 lg:px-12 xl:px-16">
+            <div className="mb-5 flex flex-wrap items-center gap-2">
+              <Badge
+                variant="outline"
+                className={getDifficultyClasses(problem.difficulty)}
+              >
+                {problem.difficulty ?? "Unknown"}
+              </Badge>
+            </div>
 
-  return (
-    <main className="h-screen overflow-hidden bg-background text-foreground">
-      <div className="grid h-[calc(100vh-3.5rem)] lg:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)]">
-        <section className="min-h-0 border-b border-border lg:border-b-0 lg:border-r">
-          <ScrollArea className="h-full">
-            <div className="mx-auto max-w-4xl px-6 py-6 lg:px-8">
-              <div className="mb-5 flex flex-wrap items-center gap-2">
-                <Badge
-                  variant="outline"
-                  className={getDifficultyClasses(problem.difficulty)}
-                >
-                  {problem.difficulty ?? "Unknown"}
-                </Badge>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              {problem.title ?? "Untitled problem"}
+            </h1>
 
+            <Separator className="my-6" />
+
+            <section>
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                Description
+              </h2>
+
+              <div className="whitespace-pre-wrap text-[15px] leading-7">
+                {renderInlineCode(
+                  problem.description ??
+                    "No description has been provided for this problem.",
+                )}
               </div>
+            </section>
 
-              <h1 className="text-2xl font-semibold tracking-tight">
-                {problem.title ?? "Untitled problem"}
-              </h1>
+            {problem.constraints && (
+              <>
+                <Separator className="my-7" />
 
-              <Separator className="my-6" />
+                <section>
+                  <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    Constraints
+                  </h2>
 
-              <section>
-                <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                  Description
+                  <div className="whitespace-pre-wrap text-[15px] leading-7">
+                    {renderInlineCode(problem.constraints)}
+                  </div>
+                </section>
+              </>
+            )}
+          </div>
+        </ScrollArea>
+      </section>
+
+      <aside className="min-h-0 w-full bg-muted/20">
+        <ScrollArea className="h-full w-full">
+          <div className="flex min-h-full w-full flex-col">
+            {problem.starter_code && (
+              <section className="w-full border-b border-border px-4 py-7">
+                <h2 className="mb-3 px-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                  Starter code
                 </h2>
 
-                <div className="whitespace-pre-wrap text-[15px] leading-7">
-                    {renderDescription(problem.description ?? "No description has been provided for this problem.")}
-                </div>
+                <pre className="min-h-5 w-full overflow-x-auto rounded-md border border-border bg-muted/40 p-5 font-mono text-sm leading-6">
+                  <code className="whitespace-pre">{problem.starter_code}</code>
+                </pre>
               </section>
-            </div>
-          </ScrollArea>
-        </section>
+            )}
 
-        <aside className="min-h-0 bg-muted/20">
-          <div className="flex h-full flex-col">
-              {problem.starter_code && (
-                <>
-                  <Separator className="my-7" />
-
-                  <section>
-                    <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                      Starter code
-                    </h2>
-
-                    <pre className="overflow-x-auto rounded-md border border-border bg-muted/40 p-4 font-mono text-sm leading-6">
-                      <code>{problem.starter_code}</code>
-                    </pre>
-                  </section>
-                </>
-              )}
-            <div className="flex flex-1 items-center justify-center p-6">
-              <div className="w-full max-w-md">
-                <form onSubmit={checkAnswer} className="space-y-4">
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="pattern-answer"
-                      className="text-sm font-medium"
-                    >
-                      Pattern or topic
-                    </label>
-
-                    <Input
-                      id="pattern-answer"
-                      value={answer}
-                      onChange={(event) => {
-                        setAnswer(event.target.value);
-
-                        if (result) {
-                          setResult(null);
-                        }
-                      }}
-                      onKeyDown={(event) => {
-                        if (event.key === "Escape") {
-                          resetAnswer();
-                        }
-                      }}
-                      placeholder="e.g. sliding window"
-                      autoComplete="off"
-                      autoFocus
-                      className="h-11 bg-background"
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={!answer.trim()}
+            <section className="w-full px-8 py-8">
+              <form onSubmit={checkAnswer} className="space-y-4">
+                <div className="space-y-2">
+                  <label
+                    htmlFor="pattern-answer"
+                    className="text-sm font-medium"
                   >
-                    Check answer
-                  </Button>
-                </form>
+                    Pattern or topic
+                  </label>
 
-                <div
-                  className="mt-5 min-h-24"
-                  aria-live="polite"
-                >
-                  {result === "correct" && (
-                    <div className="flex gap-3 border-l-2 border-emerald-500 py-1 pl-4">
-                      <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-500" />
+                  <Input
+                    id="pattern-answer"
+                    value={answer}
+                    onChange={(event) => {
+                      setAnswer(event.target.value);
 
-                      <div>
-                        <p className="font-medium text-emerald-600 dark:text-emerald-400">
-                          Correct
-                        </p>
-
-                        <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                          This problem uses{" "}
-                          <span className="font-medium text-foreground">
-                            {problem.pattern}
-                          </span>
-                          .
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {result === "incorrect" && (
-                    <div className="flex gap-3 border-l-2 border-red-500 py-1 pl-4">
-                      <XCircle className="mt-0.5 size-5 shrink-0 text-red-500" />
-
-                      <div>
-                        <p className="font-medium text-red-600 dark:text-red-400">
-                          Not quite
-                        </p>
-
-                        <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                          Review the input structure, required output, and
-                          repeated operations. Then try another pattern.
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
+                      if (result) {
+                        setResult(null);
+                      }
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Escape") {
+                        resetAnswer();
+                      }
+                    }}
+                    placeholder="e.g. sliding window"
+                    autoComplete="off"
+                    autoFocus
+                    className="h-11 w-full bg-background"
+                  />
                 </div>
-              </div>
-            </div>
 
-            <div className="flex items-center justify-between border-t border-border px-6 py-3 text-xs text-muted-foreground">
-              <span>
-                Attempts: {attempts}
-              </span>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={!answer.trim()}
+                >
+                  Check answer
+                </Button>
+              </form>
+
+              <div className="mt-6 min-h-24" aria-live="polite">
+                {result === "correct" && (
+                  <div className="flex gap-3 border-l-2 border-emerald-500 py-1 pl-4">
+                    <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-500" />
+
+                    <div>
+                      <p className="font-medium text-emerald-600 dark:text-emerald-400">
+                        Correct
+                      </p>
+
+                      <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                        This problem uses{" "}
+                        <span className="font-medium text-foreground">
+                          {problem.pattern}
+                        </span>
+                        .
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {result === "incorrect" && (
+                  <div className="flex gap-3 border-l-2 border-red-500 py-1 pl-4">
+                    <XCircle className="mt-0.5 size-5 shrink-0 text-red-500" />
+
+                    <div>
+                      <p className="font-medium text-red-600 dark:text-red-400">
+                        Not quite
+                      </p>
+
+                      <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                        Review the input structure, required output, and
+                        repeated operations. Then try another pattern.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </section>
+
+            <div className="mt-auto flex w-full items-center justify-between border-t border-border px-8 py-3 text-xs text-muted-foreground">
+              <span>Attempts: {attempts}</span>
 
               <div className="flex items-center gap-3">
                 <span>
@@ -258,8 +276,9 @@ export default function TestingClient({
               </div>
             </div>
           </div>
-        </aside>
-      </div>
-    </main>
-  );
+        </ScrollArea>
+      </aside>
+    </div>
+  </main>
+);
 }

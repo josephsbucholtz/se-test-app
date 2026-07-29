@@ -184,80 +184,80 @@ export default function TypingClient({
 
   const wpm = elapsed === 0 ? 0 : ((correct / 5 / elapsed) * 60).toFixed(1);
 
-  return (
-    <main className="px-4 py-2">
-      <h1 className="text-3xl font-bold">{currentSnippet.title}</h1>
-      <p className="text-muted-foreground">{currentSnippet.pattern}</p>
+return (
+  <main className="mx-auto max-w-4xl py-8">
+    <h1 className="text-3xl font-bold">{currentSnippet.title}</h1>
+    <p className="text-muted-foreground">{currentSnippet.pattern}</p>
 
-      <div className="mt-10 flex justify-center">
-        <div className="relative">
-          {/* Caret */}
-          <div
-            ref={caretRef}
-            className="absolute w-[2px] bg-yellow-400 transition-all duration-75"
-          />
+    <div className="mt-10 flex justify-center items-center">
+      <div className="relative">
+        {/* Caret */}
+        <div
+          ref={caretRef}
+          className="absolute w-[2px] bg-yellow-400 transition-all duration-75"
+        />
 
-          <pre className="whitespace-pre-wrap font-mono text-3xl leading-9">
-            {code.split("").map((char, index) => (
-              <span
-                key={index}
-                ref={(el) => {
-                  charRefs.current[index] = el;
-                }}
-                className={
-                  index >= typed.length
-                    ? "text-gray-400"
-                    : typed[index] === char
-                    ? "text-muted-foreground"
-                    : "text-red-500 underline decoration-red-500"
-                }
-              >
-                {char}
-              </span>
-            ))}
-          </pre>
-        </div>
-        {finished && (
-          <Grade
-            wpm={wpm.toString()}
-            accuracy={accuracy}
-            time={elapsed.toFixed(2)}
-          />
-        )}
+        <pre className="whitespace-pre-wrap font-mono text-3xl leading-9">
+          {code.split("").map((char, index) => (
+            <span
+              key={index}
+              ref={(el) => {
+                charRefs.current[index] = el;
+              }}
+              className={
+                index >= typed.length
+                  ? "text-gray-400"
+                  : typed[index] === char
+                  ? "text-muted-foreground"
+                  : "text-red-500 underline decoration-red-500"
+              }
+            >
+              {char}
+            </span>
+          ))}
+        </pre>
       </div>
-      <div className="fixed right-12 top-1/3 hidden -translate-y-1/2 opacity-60 transition-opacity hover:opacity-100 lg:block">
-        <h2 className="text-center mb-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground/70">
-          Shortcuts
-        </h2>
+      {finished && (
+        <Grade
+          wpm={wpm.toString()}
+          accuracy={accuracy}
+          time={elapsed.toFixed(2)}
+        />
+      )}
+    </div>
+    <div className="fixed right-12 top-1/3 hidden -translate-y-1/2 opacity-60 transition-opacity hover:opacity-100 lg:block">
+      <h2 className="text-center mb-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground/70">
+        Shortcuts
+      </h2>
 
-        <div className="space-y-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-1">
-              <kbd className="rounded border px-2 py-1 text-xs">Shift</kbd>
-              <span>+</span>
-              <kbd className="rounded border px-2 py-1 text-xs">Tab</kbd>
-            </div>
-
-            <span className="text-left">Next snippet</span>
+      <div className="space-y-4 text-sm text-muted-foreground">
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1">
+            <kbd className="rounded border px-2 py-1 text-xs">Shift</kbd>
+            <span>+</span>
+            <kbd className="rounded border px-2 py-1 text-xs">Tab</kbd>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex gap-1">
-              <kbd className="rounded border px-2 py-1 text-xs">Ctrl</kbd>
-              <span>+</span>
-              <kbd className="rounded border px-2 py-1 text-xs">Backspace</kbd>
-            </div>
+          <span className="text-left">Next snippet</span>
+        </div>
 
-            <span>Delete previous word</span>
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1">
+            <kbd className="rounded border px-2 py-1 text-xs">Ctrl</kbd>
+            <span>+</span>
+            <kbd className="rounded border px-2 py-1 text-xs">Backspace</kbd>
           </div>
 
-          <div className="flex items-center gap-3">
-            <kbd className="rounded border px-2 py-1 text-xs">Esc</kbd>
+          <span>Delete previous word</span>
+        </div>
 
-            <span>Reset test</span>
-          </div>
+        <div className="flex items-center gap-3">
+          <kbd className="rounded border px-2 py-1 text-xs">Esc</kbd>
+
+          <span>Reset test</span>
         </div>
       </div>
-    </main>
-  );
+    </div>
+  </main>
+);
 }

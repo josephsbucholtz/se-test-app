@@ -59,7 +59,7 @@ export default async function UserLayout({
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-6 py-8">
+      <main className="">
         {children}
       </main>
     </div>
