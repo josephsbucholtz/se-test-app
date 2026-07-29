@@ -31,14 +31,14 @@ async function fillConstraints() {
       console.log(`Fetching: ${problem.url}`);
 
       let text = problem?.description.split("Constraints:\n")
-      const constraint = text.at(1);
+      const descriptionFix = text.at(0);
 
       await prisma.problems_leetcode.update({
         where: {
           id: problem.id,
         },
         data: {
-          constraints : constraint,
+          description : descriptionFix,
         },
       });
 
@@ -61,7 +61,8 @@ async function fillConstraints() {
 }
 
 async function main() {
-    fillConstraints();
+  fillConstraints();
+
 }
 
 main()
