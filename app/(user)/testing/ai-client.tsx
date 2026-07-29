@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface ProblemContext {
   title: string | null;
@@ -24,6 +24,27 @@ export default function AIClient({ problem, answer }: AIClientProps) {
   const [result, setResult] = useState<GradeResult | null>(null);
   const [error, setError] = useState("");
   const [isGrading, setIsGrading] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
+
+  // Cancel confirmation if the user edits their answer.
+  useEffect(() => {
+    setIsConfirming(false);
+  }, [answer]);
+
+  // Cancel confirmation after 5 seconds.
+  useEffect(() => {
+    if (!isConfirming) {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      setIsConfirming(false);
+    }, 5_000);
+
+    return () => {
+      window.clearTimeout(timeout);
+    };
+  }, [isConfirming]);
 
   async function gradeAnswer() {
     const trimmedAnswer = answer.trim();
@@ -31,10 +52,12 @@ export default function AIClient({ problem, answer }: AIClientProps) {
     if (!trimmedAnswer) {
       setError("Enter your pseudocode before requesting a grade.");
       setResult(null);
+      setIsConfirming(false);
       return;
     }
 
     setIsGrading(true);
+    setIsConfirming(false);
     setError("");
     setResult(null);
 
@@ -75,59 +98,88 @@ export default function AIClient({ problem, answer }: AIClientProps) {
     }
   }
 
-return (
-  <div className="space-y-1">
-    <button
-      type="button"
-      onClick={gradeAnswer}
-      disabled={isGrading || !answer.trim()}
-      className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm font-medium transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
-    >
-      {isGrading ? (
-        <>
-          <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
-          Grading...
-        </>
-      ) : (
-        <>
-          Grade pseudocode
-          <span className="text-xs font-normal text-muted-foreground">
-            powered by Gemini
-          </span>
-          <span>✨</span>
-        </>
-      )}
-    </button>
+  function handleGradeClick() {
+    if (isGrading || !answer.trim()) {
+      return;
+    }
 
-    {error && (
-      <p className="text-sm text-destructive">
-        {error}
-      </p>
-    )}
+    if (!isConfirming) {
+      setIsConfirming(true);
+      setError("");
+      return;
+    }
 
-    {result && (
-      <div className="rounded-lg border bg-muted/30 p-4">
-        <div className="mb-2 flex items-center gap-3">
-          <span className="text-lg font-semibold">
-            {result.score}/5
-          </span>
+    void gradeAnswer();
+  }
 
-          <span
-            className={
-              result.passed
-                ? "rounded-full bg-green-500/15 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400"
-                : "rounded-full bg-red-500/15 px-2 py-0.5 text-xs font-medium text-red-700 dark:text-red-400"
-            }
-          >
-            {result.passed ? "Passed" : "Needs Work"}
-          </span>
-        </div>
+  return (
+    <div className="space-y-1">
+      <button
+        type="button"
+        onClick={handleGradeClick}
+        disabled={isGrading || !answer.trim()}
+        aria-describedby={isConfirming ? "grade-confirmation" : undefined}
+        className={`inline-flex items-center gap-2 rounded-md border border-border bg-background text-sm font-medium transition-all duration-200 hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50 ${
+          isConfirming ? "px-5 py-3 shadow-sm" : "px-3 py-2"
+        }`}
+      >
+        {isGrading ? (
+          <>
+            <span
+              aria-hidden="true"
+              className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent"
+            />
+            Grading...
+          </>
+        ) : (
+          <>
+            Grade pseudocode
 
-        <p className="text-sm leading-6 text-muted-foreground">
-          {result.feedback}
+            <span className="text-xs font-normal text-muted-foreground">
+              powered by Gemini
+            </span>
+
+            <span aria-hidden="true">✨</span>
+          </>
+        )}
+      </button>
+
+      {isConfirming && !isGrading && (
+        <p
+          id="grade-confirmation"
+          className="text-xs font-medium text-muted-foreground"
+        >
+          Click again to confirm
         </p>
-      </div>
-    )}
-  </div>
-);
+      )}
+
+      {error && (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      )}
+
+      {result && (
+        <div className="rounded-lg border bg-muted/30 p-4">
+          <div className="mb-2 flex items-center gap-3">
+            <span className="text-lg font-semibold">{result.score}/5</span>
+
+            <span
+              className={
+                result.passed
+                  ? "rounded-full bg-green-500/15 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400"
+                  : "rounded-full bg-red-500/15 px-2 py-0.5 text-xs font-medium text-red-700 dark:text-red-400"
+              }
+            >
+              {result.passed ? "Passed" : "Needs Work"}
+            </span>
+          </div>
+
+          <p className="text-sm leading-6 text-muted-foreground">
+            {result.feedback}
+          </p>
+        </div>
+      )}
+    </div>
+  );
 }
