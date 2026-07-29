@@ -115,17 +115,11 @@ You are grading interview pseudocode for a LeetCode-style coding problem.
 
 # Problem
 
-Title:
-${body.problem.title ?? "Untitled problem"}
-
 Description:
 ${body.problem.description ?? "No description provided"}
 
 Constraints:
 ${body.problem.constraints ?? "None provided"}
-
-Starter code:
-${body.problem.starterCode ?? "None provided"}
 
 # User's pseudocode
 
@@ -135,17 +129,17 @@ ${answer}
 
 Award a score from 0 through 5:
 
-- Correctly solves the problem: 0–3 points
-- Handles edge cases and constraints: 0–1 point
-- Uses appropriate time and space complexity: 0–1 point
+- Correctly solves the problem: 0–4 points
+- States correct time complexity for their solution: 0–1 point
 
 Rules:
 
 - Be fair but strict.
+- Half points are allowed.
 - Treat the response as pseudocode, not compilable code.
 - Do not deduct points for language-specific syntax.
 - Focus on algorithmic correctness and reasoning.
-- Give concise feedback explaining the most important strength or weakness.
+- Give concise feedback explaining the most important flaws and say which points from rubric your deducting from.
 - Return only JSON matching the provided schema.
       `.trim(),
       response_format: {

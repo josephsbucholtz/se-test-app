@@ -123,13 +123,30 @@ export default function TestingClient({ problem }: TestingClientProps) {
                 </section>
               )}
 
-              <section className="w-full space-y-6 px-8 py-8">
+              <section className="w-full space-y-2 px-8 py-4">
+                <div className="rounded-md border border-amber-500/20 bg-amber-500/10 px-4 py-3">
+                  <p className="text-sm font-medium text-amber-700 dark:text-amber-300">
+                    💡 Full Points
+                  </p>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+                    <li>Explain your algorithm step by step in pseudocode.</li>
+                    <li>
+                      Mention the <strong>time and space complexity</strong>{" "}
+                      (e.g. O(n)).
+                    </li>
+                    <li>
+                      Describe any important <strong>edge cases</strong> your
+                      solution handles.
+                    </li>
+                  </ul>
+                </div>
+
                 <div className="space-y-2">
                   <label
                     htmlFor="pseudocode"
                     className="text-sm font-semibold uppercase tracking-wide text-muted-foreground"
                   >
-                    Your pseudocode
+                    Pseudocode
                   </label>
 
                   <textarea
@@ -139,7 +156,7 @@ export default function TestingClient({ problem }: TestingClientProps) {
                     placeholder="Write your pseudocode here..."
                     rows={14}
                     maxLength={10_000}
-                    className="w-full resize-y rounded-md border border-border bg-background p-4 font-mono text-sm leading-6 outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                    className="w-full resize-y rounded-md border border-border bg-background p-2 font-mono text-sm leading-6 outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
                   />
 
                   <p className="text-right text-xs text-muted-foreground">

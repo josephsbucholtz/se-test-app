@@ -75,59 +75,59 @@ export default function AIClient({ problem, answer }: AIClientProps) {
     }
   }
 
-  return (
-    <section className="space-y-4 rounded-lg border border-border bg-background p-5">
-      <div>
-        <h2 className="text-lg font-semibold">AI pseudocode review</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Submit your pseudocode for feedback and a score out of 5.
+return (
+  <div className="space-y-1">
+    <button
+      type="button"
+      onClick={gradeAnswer}
+      disabled={isGrading || !answer.trim()}
+      className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm font-medium transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      {isGrading ? (
+        <>
+          <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
+          Grading...
+        </>
+      ) : (
+        <>
+          Grade pseudocode
+          <span className="text-xs font-normal text-muted-foreground">
+            powered by Gemini
+          </span>
+          <span>✨</span>
+        </>
+      )}
+    </button>
+
+    {error && (
+      <p className="text-sm text-destructive">
+        {error}
+      </p>
+    )}
+
+    {result && (
+      <div className="rounded-lg border bg-muted/30 p-4">
+        <div className="mb-2 flex items-center gap-3">
+          <span className="text-lg font-semibold">
+            {result.score}/5
+          </span>
+
+          <span
+            className={
+              result.passed
+                ? "rounded-full bg-green-500/15 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400"
+                : "rounded-full bg-red-500/15 px-2 py-0.5 text-xs font-medium text-red-700 dark:text-red-400"
+            }
+          >
+            {result.passed ? "Passed" : "Needs Work"}
+          </span>
+        </div>
+
+        <p className="text-sm leading-6 text-muted-foreground">
+          {result.feedback}
         </p>
       </div>
-
-      <button
-        type="button"
-        onClick={gradeAnswer}
-        disabled={isGrading || !answer.trim()}
-        className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {isGrading ? "Grading..." : "Grade pseudocode"}
-      </button>
-
-      {error && (
-        <div
-          role="alert"
-          className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive"
-        >
-          {error}
-        </div>
-      )}
-
-      {result && (
-        <div className="space-y-3 rounded-md border border-border bg-muted/30 p-4">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-2xl font-semibold">
-              {result.score}/5
-            </span>
-
-            <span
-              className={
-                result.passed
-                  ? "rounded-full bg-green-500/15 px-3 py-1 text-sm font-medium text-green-700 dark:text-green-400"
-                  : "rounded-full bg-red-500/15 px-3 py-1 text-sm font-medium text-red-700 dark:text-red-400"
-              }
-            >
-              {result.passed ? "Passed" : "Failed"}
-            </span>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold">Feedback</h3>
-            <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-muted-foreground">
-              {result.feedback}
-            </p>
-          </div>
-        </div>
-      )}
-    </section>
-  );
+    )}
+  </div>
+);
 }
