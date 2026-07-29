@@ -44,18 +44,16 @@ export default async function UserLayout({
                       Testing
                     </Link>
                 </NavigationMenuItem>
-
-                <NavigationMenuItem>
-                    <Link
-                      href="/developers-notes"
-                      className="rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-                    >
-                      Developer's Notes
-                    </Link>
-                </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
           </div>
+           {/* Right-aligned link */}
+          <Link
+            href="/developers-notes"
+            className="ml-auto rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+          >
+            Developer's Notes
+          </Link>
         </div>
       </header>
 
