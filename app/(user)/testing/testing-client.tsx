@@ -141,22 +141,6 @@ export default function TestingClient({
                 </div>
               </section>
 
-              {problem.constraints && (
-                <>
-                  <Separator className="my-7" />
-
-                  <section>
-                    <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                      Constraints
-                    </h2>
-
-                    <pre className="whitespace-pre-wrap rounded-md border border-border bg-muted/40 p-4 font-mono text-sm leading-6">
-                      {problem.constraints}
-                    </pre>
-                  </section>
-                </>
-              )}
-
               {problem.starter_code && (
                 <>
                   <Separator className="my-7" />

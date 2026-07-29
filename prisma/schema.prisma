@@ -49,6 +49,8 @@ model problems_leetcode {
   rating            BigInt?
   asked_by_faang    BigInt?
   similar_questions String?
+  constraints       String?
+  starter_code      String?
 }
 
 /// This enum is commented in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
