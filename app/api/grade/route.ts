@@ -129,8 +129,8 @@ ${answer}
 
 Award a score from 0 through 5:
 
-- Correctly solves the problem: 0–4 points
-- States correct time complexity for their solution: 0–1 point
+- Correctly solves the problem: 0–3 points
+- States correct time and space complexity for their solution: 0–2 point (1 point for each)
 
 Rules:
 
@@ -139,7 +139,8 @@ Rules:
 - Treat the response as pseudocode, not compilable code.
 - Do not deduct points for language-specific syntax.
 - Focus on algorithmic correctness and reasoning.
-- Give concise feedback explaining the most important flaws and say which points from rubric your deducting from.
+-In feedback start with where points where deducted from in rubric.
+- Give concise feedback explaining the most important flaws.
 - Return only JSON matching the provided schema.
       `.trim(),
       response_format: {

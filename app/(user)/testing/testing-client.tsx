@@ -126,7 +126,7 @@ export default function TestingClient({ problem }: TestingClientProps) {
                   </p>
                   <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
                     <li>Explain your algorithm in clear pseudocode.</li>
-                    <li>State the expected <strong>time complexity</strong> e.g. (O(n)).</li>
+                    <li>State the expected <strong>time and space complexity</strong> e.g. (O(n)).</li>
                     <li>
                       Handle any important <strong>edge cases</strong>.
                     </li>
