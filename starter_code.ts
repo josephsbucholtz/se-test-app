@@ -1,95 +1,10 @@
 import "dotenv/config";
 
 import { prisma } from "@/lib/prisma";
+import { getProblem } from "./app/(user)/testing/actions";
 
-type LeetCodeResponse = {
-  data?: {
-    question?: {
-      codeSnippets?: {
-        lang: string;
-        langSlug: string;
-        code: string;
-      }[];
-    };
-  };
-  errors?: {
-    message: string;
-  }[];
-};
 
-function getProblemSlug(problemUrl: string) {
-  const url = new URL(problemUrl);
-  const match = url.pathname.match(/\/problems\/([^/]+)/);
-
-  if (!match?.[1]) {
-    throw new Error(`Invalid LeetCode URL: ${problemUrl}`);
-  }
-
-  return match[1];
-}
-
-async function getPython3StarterCode(problemUrl: string) {
-  const titleSlug = getProblemSlug(problemUrl);
-
-  const response = await fetch("https://leetcode.com/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Referer: problemUrl,
-      "User-Agent": "Mozilla/5.0",
-    },
-    body: JSON.stringify({
-      operationName: "questionEditorData",
-      variables: {
-        titleSlug,
-      },
-      query: `
-        query questionEditorData($titleSlug: String!) {
-          question(titleSlug: $titleSlug) {
-            codeSnippets {
-              lang
-              langSlug
-              code
-            }
-          }
-        }
-      `,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch ${problemUrl}: ${response.status} ${response.statusText}`,
-    );
-  }
-
-  const result = (await response.json()) as LeetCodeResponse;
-
-  if (result.errors?.length) {
-    throw new Error(
-      result.errors.map((error) => error.message).join(", "),
-    );
-  }
-
-  const snippets = result.data?.question?.codeSnippets ?? [];
-
-  const python3 = snippets.find(
-    (snippet) =>
-      snippet.langSlug.toLowerCase() === "python3" ||
-      snippet.lang.toLowerCase() === "python3" ||
-      snippet.lang.toLowerCase() === "python 3",
-  );
-
-  if (!python3) {
-    throw new Error(
-      `Python 3 starter code was not found for ${problemUrl}`,
-    );
-  }
-
-  return python3.code;
-}
-
-async function fillStarterCode() {
+async function fillConstraints() {
   const problems = await prisma.problems_leetcode.findMany({
     where: {
       url: {
@@ -100,6 +15,7 @@ async function fillStarterCode() {
       id: true,
       url: true,
       title: true,
+      description: true,
     },
   });
 
@@ -109,19 +25,20 @@ async function fillStarterCode() {
   let failed = 0;
 
   for (const problem of problems) {
-    if (!problem.url) continue;
+    if (!problem.description) continue;
 
     try {
       console.log(`Fetching: ${problem.url}`);
 
-      const starterCode = await getPython3StarterCode(problem.url);
+      let text = problem?.description.split("Constraints:\n")
+      const constraint = text.at(1);
 
       await prisma.problems_leetcode.update({
         where: {
           id: problem.id,
         },
         data: {
-          starter_code: starterCode,
+          constraints : constraint,
         },
       });
 
@@ -144,7 +61,7 @@ async function fillStarterCode() {
 }
 
 async function main() {
-  await fillStarterCode();
+    fillConstraints();
 }
 
 main()
