@@ -122,18 +122,15 @@ export default function TestingClient({ problem }: TestingClientProps) {
               <section className="w-full space-y-2 px-8 py-4">
                 <div className="rounded-md border border-amber-500/20 bg-amber-500/10 px-4 py-3">
                   <p className="text-sm font-medium text-amber-700 dark:text-amber-300">
-                    💡 Full Points
+                    💡Before you submit: 
                   </p>
-                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                    <li>Explain your algorithm step by step in pseudocode.</li>
+                  <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
+                    <li>Explain your algorithm in clear pseudocode.</li>
+                    <li>State the expected <strong>time complexity</strong> e.g. (O(n)).</li>
                     <li>
-                      Mention the <strong>time complexity</strong>{" "}
-                      (e.g. O(n)).
+                      Handle any important <strong>edge cases</strong>.
                     </li>
-                    <li>
-                      Handle any important <strong>edge cases</strong>
-                    </li>
-                  </ul>
+                  </ol>
                 </div>
 
                 <div className="space-y-2">
