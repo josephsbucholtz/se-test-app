@@ -140,7 +140,12 @@ export default function TestingClient({
                     {renderDescription(problem.description ?? "No description has been provided for this problem.")}
                 </div>
               </section>
+            </div>
+          </ScrollArea>
+        </section>
 
+        <aside className="min-h-0 bg-muted/20">
+          <div className="flex h-full flex-col">
               {problem.starter_code && (
                 <>
                   <Separator className="my-7" />
@@ -156,12 +161,6 @@ export default function TestingClient({
                   </section>
                 </>
               )}
-            </div>
-          </ScrollArea>
-        </section>
-
-        <aside className="min-h-0 bg-muted/20">
-          <div className="flex h-full flex-col">
             <div className="flex flex-1 items-center justify-center p-6">
               <div className="w-full max-w-md">
                 <form onSubmit={checkAnswer} className="space-y-4">
