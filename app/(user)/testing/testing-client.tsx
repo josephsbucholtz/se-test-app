@@ -110,12 +110,8 @@ export default function TestingClient({ problem }: TestingClientProps) {
           <ScrollArea className="h-full w-full">
             <div className="flex min-h-full w-full flex-col">
               {problem.starter_code && (
-                <section className="w-full border-b border-border px-4 py-7">
-                  <h2 className="mb-3 px-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                    Starter code
-                  </h2>
-
-                  <pre className="w-full overflow-x-auto rounded-md border border-border bg-muted/40 p-5 font-mono text-sm leading-6">
+                <section className="w-full border-b border-border px-4 pt-2">
+                  <pre className="w-full overflow-x-auto bg-muted/40 p-5 font-mono text-sm leading-6">
                     <code className="whitespace-pre">
                       {problem.starter_code}
                     </code>
@@ -131,12 +127,11 @@ export default function TestingClient({ problem }: TestingClientProps) {
                   <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
                     <li>Explain your algorithm step by step in pseudocode.</li>
                     <li>
-                      Mention the <strong>time and space complexity</strong>{" "}
+                      Mention the <strong>time complexity</strong>{" "}
                       (e.g. O(n)).
                     </li>
                     <li>
-                      Describe any important <strong>edge cases</strong> your
-                      solution handles.
+                      Handle any important <strong>edge cases</strong>
                     </li>
                   </ul>
                 </div>
