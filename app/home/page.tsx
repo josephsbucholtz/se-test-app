@@ -9,11 +9,11 @@ const features = [
     video: "/typingtest.mp4",
   },
   {
-    title: "Testing Approach (Work in progress)",
+    title: "Testing Approach (COMING SOON...)",
     description:
       "Test your approach to leetcode problems by submitting pseudocode and receiving feedback.",
     href: "/testing",
-    video: "/TestingFeature.mp4",
+    video: "/approachtest.mp4",
   },
 ];
 
