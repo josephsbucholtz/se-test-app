@@ -75,117 +75,117 @@ export async function POST(request: Request) {
       { error: "In development. The pseudocode could not be graded." },
       { status: 500 },
     );
-  try {
-    const apiKey = process.env.GEMINI_API_KEY;
+//   try {
+//     const apiKey = process.env.GEMINI_API_KEY;
 
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "GEMINI_API_KEY is not configured." },
-        { status: 500 },
-      );
-    }
+//     if (!apiKey) {
+//       return NextResponse.json(
+//         { error: "GEMINI_API_KEY is not configured." },
+//         { status: 500 },
+//       );
+//     }
 
-    const body: unknown = await request.json();
+//     const body: unknown = await request.json();
 
-    if (!isGradeRequest(body)) {
-      return NextResponse.json(
-        { error: "A valid problem and answer are required." },
-        { status: 400 },
-      );
-    }
+//     if (!isGradeRequest(body)) {
+//       return NextResponse.json(
+//         { error: "A valid problem and answer are required." },
+//         { status: 400 },
+//       );
+//     }
 
-    const answer = body.answer.trim();
+//     const answer = body.answer.trim();
 
-    if (!answer) {
-      return NextResponse.json(
-        { error: "Answer cannot be empty." },
-        { status: 400 },
-      );
-    }
+//     if (!answer) {
+//       return NextResponse.json(
+//         { error: "Answer cannot be empty." },
+//         { status: 400 },
+//       );
+//     }
 
-    if (answer.length > 10_000) {
-      return NextResponse.json(
-        { error: "Answer is too long." },
-        { status: 400 },
-      );
-    }
+//     if (answer.length > 10_000) {
+//       return NextResponse.json(
+//         { error: "Answer is too long." },
+//         { status: 400 },
+//       );
+//     }
 
-    const ai = new GoogleGenAI({ apiKey });
+//     const ai = new GoogleGenAI({ apiKey });
 
-    const interaction = await ai.interactions.create({
-      model: "gemini-3.1-flash-lite",
-      input: `
-You are grading interview pseudocode for a LeetCode-style coding problem.
+//     const interaction = await ai.interactions.create({
+//       model: "gemini-3.1-flash-lite",
+//       input: `
+// You are grading interview pseudocode for a LeetCode-style coding problem.
 
-# Problem
+// # Problem
 
-Description:
-${body.problem.description ?? "No description provided"}
+// Description:
+// ${body.problem.description ?? "No description provided"}
 
-Constraints:
-${body.problem.constraints ?? "None provided"}
+// Constraints:
+// ${body.problem.constraints ?? "None provided"}
 
-# User's pseudocode
+// # User's pseudocode
 
-${answer}
+// ${answer}
 
-# Rubric
+// # Rubric
 
-Award a score from 0 through 5:
+// Award a score from 0 through 5:
 
-- Chooses a correct and reasonable approach/pattern for the problem: 0–2 points
-- Loosly implements a rough draft pseudocode solution that is mostly correct: 0–1 point
-- States correct time complexity for the stated approach: 0–1 point
-- States correct space complexity for the stated approach: 0–1 point
+// - Chooses a correct and reasonable approach/pattern for the problem: 0–2 points
+// - Loosly implements a rough draft pseudocode solution that is mostly correct: 0–1 point
+// - States correct time complexity for the stated approach: 0–1 point
+// - States correct space complexity for the stated approach: 0–1 point
 
-Rules:
+// Rules:
 
-- Be fair but strict.
-- Half points are allowed.
-- Treat the response as pseudocode, not compilable code.
-- Do not deduct points for language-specific syntax.
-- Focus on algorithmic correctness and reasoning.
--In feedback start with where points where deducted from in rubric.
-- Give concise feedback explaining the most important flaws.
-- Return only JSON matching the provided schema.
-      `.trim(),
-      response_format: {
-        type: "text",
-        mime_type: "application/json",
-        schema: gradingSchema,
-      },
-    });
+// - Be fair but strict.
+// - Half points are allowed.
+// - Treat the response as pseudocode, not compilable code.
+// - Do not deduct points for language-specific syntax.
+// - Focus on algorithmic correctness and reasoning.
+// -In feedback start with where points where deducted from in rubric.
+// - Give concise feedback explaining the most important flaws.
+// - Return only JSON matching the provided schema.
+//       `.trim(),
+//       response_format: {
+//         type: "text",
+//         mime_type: "application/json",
+//         schema: gradingSchema,
+//       },
+//     });
 
-    if (!interaction.output_text) {
-      throw new Error("The model did not return a grading result.");
-    }
+//     if (!interaction.output_text) {
+//       throw new Error("The model did not return a grading result.");
+//     }
 
-    const modelResult = JSON.parse(
-      interaction.output_text,
-    ) as ModelGradeResult;
+//     const modelResult = JSON.parse(
+//       interaction.output_text,
+//     ) as ModelGradeResult;
 
-    if (
-      !Number.isInteger(modelResult.score) ||
-      modelResult.score < 0 ||
-      modelResult.score > 5 ||
-      typeof modelResult.feedback !== "string"
-    ) {
-      throw new Error("The model returned an invalid grading result.");
-    }
+//     if (
+//       !Number.isInteger(modelResult.score) ||
+//       modelResult.score < 0 ||
+//       modelResult.score > 5 ||
+//       typeof modelResult.feedback !== "string"
+//     ) {
+//       throw new Error("The model returned an invalid grading result.");
+//     }
 
-    const result: GradeResult = {
-      score: modelResult.score,
-      passed: modelResult.score >= 3,
-      feedback: modelResult.feedback,
-    };
+//     const result: GradeResult = {
+//       score: modelResult.score,
+//       passed: modelResult.score >= 3,
+//       feedback: modelResult.feedback,
+//     };
 
-    return NextResponse.json(result);
-  } catch (error) {
-    console.error("Pseudocode grading failed:", error);
+//     return NextResponse.json(result);
+//   } catch (error) {
+//     console.error("Pseudocode grading failed:", error);
 
-    return NextResponse.json(
-      { error: "The pseudocode could not be graded." },
-      { status: 500 },
-    );
-  }
+//     return NextResponse.json(
+//       { error: "The pseudocode could not be graded." },
+//       { status: 500 },
+//     );
+//   }
 }
