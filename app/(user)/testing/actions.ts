@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { problems_leetcode } from "@prisma/client";
 
 export async function getProblem() {
     const problem = await prisma.problems_leetcode.findUniqueOrThrow({
@@ -26,30 +27,20 @@ export async function getRandomProblem() {
 }
 
 export async function getNextRandomProblem(currentId?: bigint) {
-    const tableLength = await prisma.problems_leetcode.count();
- 
-    if (tableLength <= 1) {
-        return prisma.problems_leetcode.findUniqueOrThrow({
-            where: {
-                id: BigInt(1),
-            },
-        });
-    }
- 
-    let randomNumber = BigInt(Math.floor(Math.random() * tableLength) + 1);
- 
-    // Avoid serving the same problem twice in a row when possible.
-    while (currentId !== undefined && randomNumber === currentId) {
-        randomNumber = BigInt(Math.floor(Math.random() * tableLength) + 1);
-    }
- 
-    const problem = await prisma.problems_leetcode.findUniqueOrThrow({
-        where: {
-            id: randomNumber,
-        },
-    });
- 
-    return problem;
+  const result = await prisma.$queryRaw<problems_leetcode[]>`
+    SELECT *
+    FROM problems_leetcode
+    WHERE id != ${currentId ?? -1}
+    OFFSET floor(random() * (SELECT count(*) FROM problems_leetcode WHERE id != ${currentId ?? -1}))
+    LIMIT 1
+  `;
+
+  if (result[0]) {
+    return result[0];
+  }
+
+  // Fallback: only one row exists total (or currentId filter left nothing)
+  return prisma.problems_leetcode.findFirstOrThrow();
 }
 
 export async function getRandomProblemDifficulty(diff: string) {

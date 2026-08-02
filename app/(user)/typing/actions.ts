@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { typing_snippets } from "@prisma/client";
 
 export async function getSnippet(uid: number) {
     const snippet = await prisma.typing_snippets.findUnique({
@@ -13,14 +14,16 @@ export async function getSnippet(uid: number) {
 }
 
 export async function getRandomSnippet() {
-    const tableLength = await prisma.typing_snippets.count(); 
-    let randomNumber = Math.floor(Math.random() * tableLength); 
+  const result = await prisma.$queryRaw<typing_snippets[]>`
+    SELECT *
+    FROM typing_snippets
+    OFFSET floor(random() * (SELECT count(*) FROM typing_snippets))
+    LIMIT 1
+  `;
 
-    const snippet = await prisma.typing_snippets.findUniqueOrThrow({
-        where: {
-            id: randomNumber + 1, 
-        },
-    });
+  if (!result[0]) {
+    throw new Error("No snippet found");
+  }
 
-    return snippet;
+  return result[0];
 }
