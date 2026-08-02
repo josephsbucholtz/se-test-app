@@ -130,7 +130,8 @@ ${answer}
 Award a score from 0 through 5:
 
 - Correctly solves the problem: 0–3 points
-- States correct time and space complexity for their solution: 0–2 point (1 point for each)
+- States correct time and space complexity for their solution: 0.5 point each
+- Handles edge cases: 0–1 point
 
 Rules:
 
