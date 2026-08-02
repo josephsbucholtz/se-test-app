@@ -71,6 +71,10 @@ function isGradeRequest(body: unknown): body is GradeRequest {
 }
 
 export async function POST(request: Request) {
+    return NextResponse.json(
+      { error: "In development. The pseudocode could not be graded." },
+      { status: 500 },
+    );
   try {
     const apiKey = process.env.GEMINI_API_KEY;
 
