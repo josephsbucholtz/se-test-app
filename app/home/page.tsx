@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 const features = [
@@ -7,14 +6,14 @@ const features = [
     description:
       "Practice typing real code snippets and improve your speed and accuracy.",
     href: "/typing",
-    image: "/Screenshot 2026-07-23 232035.png",
+    video: "/typingtest.mp4",
   },
   {
-    title: "Pattern Recognition",
+    title: "Testing Approach (Work in progress)",
     description:
-      "Understand problems and the patterns associated with them.",
+      "Test your approach to leetcode problems by submitting pseudocode and receiving feedback.",
     href: "/testing",
-    image: "/TestingFeature.png",
+    video: "/TestingFeature.mp4",
   },
 ];
 
@@ -39,12 +38,13 @@ export default function Home() {
                 className="group overflow-hidden rounded-xl border border-border bg-card text-left transition hover:-translate-y-1 hover:border-foreground/30 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <div className="relative aspect-video w-full overflow-hidden border-b border-border bg-muted">
-                  <Image
-                    src={feature.image}
-                    alt={feature.title}
-                    fill
-                    className="object-cover transition duration-300 group-hover:scale-[1.02]"
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                  <video
+                    src={feature.video}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
                   />
                 </div>
 
