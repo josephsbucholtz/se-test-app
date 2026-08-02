@@ -12,6 +12,7 @@ interface ProblemContext {
 interface AIClientProps {
   problem: ProblemContext;
   answer: string;
+  onGraded?: () => void;
 }
 
 interface GradeResult {
@@ -20,11 +21,15 @@ interface GradeResult {
   feedback: string;
 }
 
-export default function AIClient({ problem, answer }: AIClientProps) {
+export default function AIClient({ problem, answer, onGraded }: AIClientProps) {
   const [result, setResult] = useState<GradeResult | null>(null);
   const [error, setError] = useState("");
   const [isGrading, setIsGrading] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
+  // Locks grading after the first successful submission for this problem.
+  // Resetting this component (e.g. by changing its `key`) is the only way
+  // to unlock it, which happens automatically when a new problem loads.
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   // Cancel confirmation if the user edits their answer.
   useEffect(() => {
@@ -87,6 +92,8 @@ export default function AIClient({ problem, answer }: AIClientProps) {
       }
 
       setResult(data as GradeResult);
+      setHasSubmitted(true);
+      onGraded?.();
     } catch (caughtError) {
       setError(
         caughtError instanceof Error
@@ -99,7 +106,7 @@ export default function AIClient({ problem, answer }: AIClientProps) {
   }
 
   function handleGradeClick() {
-    if (isGrading || !answer.trim()) {
+    if (isGrading || !answer.trim() || hasSubmitted) {
       return;
     }
 
@@ -117,7 +124,7 @@ export default function AIClient({ problem, answer }: AIClientProps) {
       <button
         type="button"
         onClick={handleGradeClick}
-        disabled={isGrading || !answer.trim()}
+        disabled={isGrading || !answer.trim() || hasSubmitted}
         aria-describedby={isConfirming ? "grade-confirmation" : undefined}
         className={`inline-flex items-center gap-2 rounded-md border border-border bg-background text-sm font-medium transition-all duration-200 hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50 ${
           isConfirming ? "px-5 py-3 shadow-sm" : "px-3 py-2"
@@ -131,6 +138,8 @@ export default function AIClient({ problem, answer }: AIClientProps) {
             />
             Grading...
           </>
+        ) : hasSubmitted ? (
+          <>Answer submitted</>
         ) : (
           <>
             Grade pseudocode
@@ -144,12 +153,18 @@ export default function AIClient({ problem, answer }: AIClientProps) {
         )}
       </button>
 
-      {isConfirming && !isGrading && (
+      {isConfirming && !isGrading && !hasSubmitted && (
         <p
           id="grade-confirmation"
           className="text-xs font-medium text-muted-foreground"
         >
           Click again to confirm
+        </p>
+      )}
+
+      {hasSubmitted && !isGrading && (
+        <p className="text-xs text-muted-foreground">
+          You&apos;ve already submitted an answer for this problem. Get the next problem to try another.
         </p>
       )}
 

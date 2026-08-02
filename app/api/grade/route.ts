@@ -129,9 +129,10 @@ ${answer}
 
 Award a score from 0 through 5:
 
-- Correctly solves the problem: 0–3 points
-- States correct time and space complexity for their solution: 0.5 point each
-- Handles edge cases: 0–1 point
+- Chooses a correct and reasonable approach/pattern for the problem: 0–2 points
+- Loosly implements a rough draft pseudocode solution that is mostly correct: 0–1 point
+- States correct time complexity for the stated approach: 0–1 point
+- States correct space complexity for the stated approach: 0–1 point
 
 Rules:
 

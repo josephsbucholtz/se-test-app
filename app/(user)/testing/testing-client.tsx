@@ -1,21 +1,22 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
-import type { problems } from "@prisma/client";
-import { CheckCircle2, RotateCcw, XCircle } from "lucide-react";
+import { FormEvent, useMemo, useState, useTransition } from "react";
+import type { problems, problems_leetcode } from "@prisma/client";
+import { ArrowRight, CheckCircle2, RotateCcw, XCircle } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { getNextRandomProblem } from "./actions";
 import AIClient from "./ai-client";
 
 type TestingClientProps = {
-  problem: problems;
+  problem: problems_leetcode;
 };
 
-function getDifficultyClasses(difficulty: problems["difficulty"]) {
+function getDifficultyClasses(difficulty: string | null | undefined) {
   switch (difficulty?.toLowerCase()) {
     case "easy":
       return "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400";
@@ -50,8 +51,21 @@ function renderInlineCode(text: string) {
   });
 }
 
-export default function TestingClient({ problem }: TestingClientProps) {
+export default function TestingClient({ problem: initialProblem }: TestingClientProps) {
+  const [problem, setProblem] = useState(initialProblem);
   const [answer, setAnswer] = useState("");
+  // Locked once the current answer has been graded; unlocked when a new problem loads.
+  const [isLocked, setIsLocked] = useState(false);
+  const [isLoadingNext, startNextTransition] = useTransition();
+
+  function handleNextProblem() {
+    startNextTransition(async () => {
+      const nextProblem = await getNextRandomProblem(problem.id);
+      setProblem(nextProblem);
+      setAnswer("");
+      setIsLocked(false);
+    });
+  }
 
   return (
     <main className="h-screen w-full overflow-hidden bg-background text-foreground pb-16">
@@ -66,6 +80,30 @@ export default function TestingClient({ problem }: TestingClientProps) {
                 >
                   {problem.difficulty ?? "Unknown"}
                 </Badge>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleNextProblem}
+                  disabled={isLoadingNext}
+                  className="ml-auto gap-1.5"
+                >
+                  {isLoadingNext ? (
+                    <>
+                      <span
+                        aria-hidden="true"
+                        className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent"
+                      />
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      Next problem
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </>
+                  )}
+                </Button>
               </div>
 
               <h1 className="text-2xl font-semibold tracking-tight">
@@ -148,7 +186,8 @@ export default function TestingClient({ problem }: TestingClientProps) {
                     placeholder="Write your pseudocode here..."
                     rows={14}
                     maxLength={10_000}
-                    className="w-full resize-y rounded-md border border-border bg-background p-2 font-mono text-sm leading-6 outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                    disabled={isLocked || isLoadingNext}
+                    className="w-full resize-y rounded-md border border-border bg-background p-2 font-mono text-sm leading-6 outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60"
                   />
 
                   <p className="text-right text-xs text-muted-foreground">
@@ -156,7 +195,12 @@ export default function TestingClient({ problem }: TestingClientProps) {
                   </p>
                 </div>
 
-                <AIClient problem={problem} answer={answer} />
+                <AIClient
+                  key={problem.id}
+                  problem={problem}
+                  answer={answer}
+                  onGraded={() => setIsLocked(true)}
+                />
               </section>
             </div>
           </ScrollArea>
