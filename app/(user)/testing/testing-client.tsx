@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState, useTransition } from "react";
-import type { problems, problems_leetcode } from "@prisma/client";
+import type { problems_leetcode } from "@prisma/client";
 import { ArrowRight, CheckCircle2, RotateCcw, XCircle } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
