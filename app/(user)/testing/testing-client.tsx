@@ -163,11 +163,9 @@ export default function TestingClient({ problem: initialProblem }: TestingClient
                     💡Before you submit: 
                   </p>
                   <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
-                    <li>Explain your algorithm in clear pseudocode.</li>
-                    <li>State the expected <strong>time and space complexity</strong> e.g. (O(n)).</li>
-                    <li>
-                      Handle any important <strong>edge cases</strong>.
-                    </li>
+                    <li>State pattern / approach (1 point)</li>
+                    <li>Explain your algorithm in clear pseudocode. (2 points)</li>
+                    <li>State the expected <strong>time and space complexity</strong> e.g. (O(n)). (2 points)</li>
                   </ol>
                 </div>
 
