@@ -145,7 +145,7 @@ export async function POST(request: Request) {
 // - Treat the response as pseudocode, not compilable code.
 // - Do not deduct points for language-specific syntax.
 // - Focus on algorithmic correctness and reasoning.
-// -In feedback start with where points where deducted from in rubric.
+// -Give bullet point where points where deducted from in rubric.
 // - Give concise feedback explaining the most important flaws.
 // - Return only JSON matching the provided schema.
 //       `.trim(),
