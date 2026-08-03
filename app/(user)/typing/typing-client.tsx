@@ -3,7 +3,20 @@
 import { useEffect, useRef, useState } from "react";
 import { typing_snippets } from "@prisma/client";
 import Grade from "./grade";
-import { getRandomSnippet } from "./actions";
+import { getRandomFilteredSnippet, type SnippetLanguageFilter, type SnippetPatternFilter, } from "./actions";
+import MinimalSelect from "./minimal-select";
+
+// Add new options here as the db grows — nothing else needs to change.
+const LANGUAGE_OPTIONS: { value: SnippetLanguageFilter; label: string }[] = [
+  { value: "python", label: "Python" },
+  { value: "cpp", label: "C++" },
+];
+
+const PATTERN_OPTIONS: { value: SnippetPatternFilter; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "patterns", label: "DSA"},
+  { value: "Containers", label: "Containers" },
+];
 
 export default function TypingClient({
   snippet,
@@ -20,17 +33,47 @@ export default function TypingClient({
   const [endTime, setEndTime] = useState<number | null>(null);
   const [loadingNext, setLoadingNext] = useState(false);
 
+  const [language, setLanguage] = useState<SnippetLanguageFilter>("python");
+  const [pattern, setPattern] = useState<SnippetPatternFilter>("all");
+  const [noMatches, setNoMatches] = useState(false);
+
+  // Whether a filter dropdown menu is currently open — used to pause
+  // the typing test's global keyboard handling while a menu is open.
+  const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const [patternMenuOpen, setPatternMenuOpen] = useState(false);
+
   const charRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const caretRef = useRef<HTMLDivElement>(null);
 
-  async function loadNextSnippet() {
+  function toggleLanguageMenu(open: boolean) {
+    setLanguageMenuOpen(open);
+    if (open) setPatternMenuOpen(false);
+  }
+
+  function togglePatternMenu(open: boolean) {
+    setPatternMenuOpen(open);
+    if (open) setLanguageMenuOpen(false);
+  }
+
+  // Shared by "next snippet" (Enter/Shift+Tab) and the filter dropdowns,
+  // so both paths always fetch against the current language + pattern.
+  async function loadSnippetWithFilters(
+    nextLanguage: SnippetLanguageFilter,
+    nextPattern: SnippetPatternFilter,
+  ) {
     if (loadingNext) return;
 
     setLoadingNext(true);
 
     try {
-      const next = await getRandomSnippet();
+      const next = await getRandomFilteredSnippet(nextLanguage, nextPattern);
 
+      if (!next) {
+        setNoMatches(true);
+        return;
+      }
+
+      setNoMatches(false);
       charRefs.current = [];
 
       setCurrentSnippet(next);
@@ -42,6 +85,20 @@ export default function TypingClient({
     } finally {
       setLoadingNext(false);
     }
+  }
+
+  function loadNextSnippet() {
+    void loadSnippetWithFilters(language, pattern);
+  }
+
+  function handleLanguageChange(value: SnippetLanguageFilter) {
+    setLanguage(value);
+    void loadSnippetWithFilters(value, pattern);
+  }
+
+  function handlePatternChange(value: SnippetPatternFilter) {
+    setPattern(value);
+    void loadSnippetWithFilters(language, value);
   }
 
   function reset() {
@@ -56,6 +113,12 @@ export default function TypingClient({
   // Listen for keystrokes
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
+      // Pause typing-test key handling while a filter dropdown is open,
+      // so its own click/close interactions aren't fed into the test.
+      if (languageMenuOpen || patternMenuOpen) {
+        return;
+      }
+
       e.preventDefault();
 
       if (typed.length === 0) {
@@ -143,7 +206,16 @@ export default function TypingClient({
     window.addEventListener("keydown", handleKeyDown);
 
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [code.length, finished, typed.length, loadingNext]);
+  }, [
+    code.length,
+    finished,
+    typed.length,
+    loadingNext,
+    language,
+    pattern,
+    languageMenuOpen,
+    patternMenuOpen,
+  ]);
 
   useEffect(() => {
     const active = charRefs.current[currentIndex];
@@ -186,6 +258,34 @@ export default function TypingClient({
 
 return (
   <main className="mx-auto max-w-4xl py-8">
+    <div className="mb-6 flex items-center justify-center gap-2">
+      <MinimalSelect
+        label="Language"
+        value={language}
+        options={LANGUAGE_OPTIONS}
+        open={languageMenuOpen}
+        onOpenChange={toggleLanguageMenu}
+        onChange={handleLanguageChange}
+      />
+
+      <span className="mt-4 text-muted-foreground/40">|</span>
+
+      <MinimalSelect
+        label="Pattern"
+        value={pattern}
+        options={PATTERN_OPTIONS}
+        open={patternMenuOpen}
+        onOpenChange={togglePatternMenu}
+        onChange={handlePatternChange}
+      />
+
+      {noMatches && (
+        <span className="text-xs text-destructive">
+          No snippets match that combination.
+        </span>
+      )}
+    </div>
+
     <h1 className="text-3xl font-bold">{currentSnippet.title}</h1>
     <p className="text-muted-foreground">{currentSnippet.pattern}</p>
 
