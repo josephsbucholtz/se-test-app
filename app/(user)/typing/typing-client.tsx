@@ -260,6 +260,7 @@ return (
   <main className="mx-auto max-w-4xl py-8">
     <div className="mb-6 flex items-center justify-center gap-2">
       <MinimalSelect
+        label="Language"
         value={language}
         options={LANGUAGE_OPTIONS}
         open={languageMenuOpen}
@@ -267,9 +268,10 @@ return (
         onChange={handleLanguageChange}
       />
 
-      <span className="text-muted-foreground/40">|</span>
+      <span className="mt-4 text-muted-foreground/40">|</span>
 
       <MinimalSelect
+        label="Pattern"
         value={pattern}
         options={PATTERN_OPTIONS}
         open={patternMenuOpen}
