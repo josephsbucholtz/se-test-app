@@ -5,7 +5,6 @@ import TestingClient from "./testing-client";
 
 export default async function Testing() {
   const problem = await getProblem();
-
   const randomProblem = await getRandomProblem();
   if (!randomProblem) {
     return (
