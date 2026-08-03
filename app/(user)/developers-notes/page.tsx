@@ -10,8 +10,8 @@ export default function DevelopersNotes() {
         </p>
 
         <p>
-          First, this project is a work in progress and a tool to practice
-          before studying leetcode. The goal is not to contend with services as
+          First, this project is a work in progress and a <strong>tool to practice
+          before studying leetcode</strong>. The goal is not to contend with services as
           leetcode, neetcode, etc. but rather to warm-up before using these
           websites. The typing test provides classic DSA patterns that through
           muscle memory should become second nature. The testing feature is more
@@ -27,10 +27,8 @@ export default function DevelopersNotes() {
         </p>
 
         <p>
-          Finally, All this was done for fun and to help me when I am prepping
-          for software engineering interviews. I hope this helps others prep for
-          their interviews as well, especially the typing test for warm-ups: <strong>the
-          main goal for this app</strong>.
+          Finally, this website was created for fun and to help me prepare 
+          for software engineering interviews. Hopefully, this helps others prep too! 
         </p>
         <p className="pt-8 text-sm text-muted-foreground">— July 29, 2026</p>
       </div>
