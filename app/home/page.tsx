@@ -9,11 +9,12 @@ const features = [
     video: "/typingtest.mp4",
   },
   {
-    title: "Testing Approach (COMING SOON...)",
+    title: "Testing Approach",
     description:
       "Test your approach to leetcode problems by submitting pseudocode and receiving feedback.",
     href: "/testing",
     video: "/approachtest.mp4",
+    premium: true,
   },
 ];
 
@@ -51,6 +52,9 @@ export default function Home() {
                 <div className="p-6">
                   <h2 className="text-xl font-semibold tracking-tight">
                     {feature.title}
+                    {feature.premium && (
+                      <span className="italic text-amber-400"> PREMIUM</span>
+                    )}
                   </h2>
 
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
