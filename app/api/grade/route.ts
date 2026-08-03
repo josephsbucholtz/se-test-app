@@ -1,8 +1,8 @@
+import { prisma } from "@/lib/prisma";
+import { createClient } from "@/lib/supabase/server";
 import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
 
-import { prisma } from "@/lib/prisma";
-import { createClient } from "@/lib/supabase/server";
 
 interface GradeResult {
   score: number;
