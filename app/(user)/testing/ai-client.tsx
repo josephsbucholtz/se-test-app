@@ -169,7 +169,7 @@ export default function AIClient({ problem, answer, onGraded }: AIClientProps) {
       )}
 
       {error && (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-sm text-destructive text-red-600">
           {error}
         </p>
       )}

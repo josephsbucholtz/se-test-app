@@ -5,12 +5,20 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { createClient } from "@/lib/supabase/server";
+import { signOut } from "@/app/(auth)/actions";
+import SignOutButton from "./sign-out-button";
 
 export default async function UserLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
@@ -41,19 +49,37 @@ export default async function UserLayout({
                       href="/testing"
                       className="rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
                     >
-                      Testing (COMING SOON...)
+                    Testing{" "}
+                      <span className="italic text-amber-400">PREMIUM</span>
                     </Link>
+
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
           </div>
-           {/* Right-aligned link */}
-          <Link
-            href="/developers-notes"
-            className="ml-auto rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-          >
-            Developer's Notes
-          </Link>
+
+          {/* Right-aligned links */}
+          <div className="ml-auto flex items-center gap-2">
+            <Link
+              href="/developers-notes"
+              className="rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+            >
+              Developer's Notes
+            </Link>
+
+            {user ? (
+              <form action={signOut}>
+                <SignOutButton />
+              </form>
+            ) : (
+              <Link
+                href="/login"
+                className="rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+              >
+                Log in
+              </Link>
+            )}
+          </div>
         </div>
       </header>
 
