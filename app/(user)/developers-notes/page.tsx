@@ -14,11 +14,7 @@ export default function DevelopersNotes() {
           before studying leetcode</strong>. The goal is not to contend with services as
           leetcode, neetcode, etc. but rather to warm-up before using these
           websites. The typing test provides classic DSA patterns that through
-          muscle memory should become second nature. The testing feature is more
-          for the interviews where pseudocode and discussing the time
-          complexity, etc. is important. It is also easier, so another form of
-          warming-up. Your pseudocode is graded by Google Gemini, a feature that
-          I added to keep up with recent trends.
+          muscle memory should become second nature. 
         </p>
         <p>
           Second, I am not a front-end developer nor is it my specialty. I can

@@ -5,7 +5,7 @@ export default async function LoginPage() {
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-background px-4">
       <Link
-        href="/home"
+        href="/typing"
         className="absolute left-36 top-6 text-xl font-bold tracking-tight"
       >
         Software Practice
