@@ -10,6 +10,7 @@ import {
   type SnippetPatternFilter,
 } from "./actions";
 import MinimalSelect from "./minimal-select";
+import Link from "next/link";
 
 const QUEUE_SIZE = 3;
 
@@ -45,10 +46,8 @@ export default function TypingClient({
   const [startTime, setStartTime] = useState<number | null>(null);
   const [endTime, setEndTime] = useState<number | null>(null);
 
-  const [language, setLanguage] =
-    useState<SnippetLanguageFilter>("python");
-  const [pattern, setPattern] =
-    useState<SnippetPatternFilter>("all");
+  const [language, setLanguage] = useState<SnippetLanguageFilter>("python");
+  const [pattern, setPattern] = useState<SnippetPatternFilter>("all");
   const [noMatches, setNoMatches] = useState(false);
 
   // Whether a filter dropdown menu is currently open.
@@ -64,7 +63,7 @@ export default function TypingClient({
 
   async function fillQueue(
     nextLanguage: SnippetLanguageFilter,
-    nextPattern: SnippetPatternFilter,
+    nextPattern: SnippetPatternFilter
   ) {
     const generation = queueGenerationRef.current;
     const queue = snippetQueueRef.current;
@@ -75,7 +74,7 @@ export default function TypingClient({
     }
 
     const requests = Array.from({ length: missingCount }, () =>
-      getRandomFilteredSnippet(nextLanguage, nextPattern),
+      getRandomFilteredSnippet(nextLanguage, nextPattern)
     );
 
     const snippets = await Promise.all(requests);
@@ -143,7 +142,7 @@ export default function TypingClient({
    */
   async function loadSnippetWithFilters(
     nextLanguage: SnippetLanguageFilter,
-    nextPattern: SnippetPatternFilter,
+    nextPattern: SnippetPatternFilter
   ) {
     if (isLoadingNextRef.current) {
       return;
@@ -162,10 +161,8 @@ export default function TypingClient({
        */
       if (!next) {
         next =
-          (await getRandomFilteredSnippet(
-            nextLanguage,
-            nextPattern,
-          )) ?? undefined;
+          (await getRandomFilteredSnippet(nextLanguage, nextPattern)) ??
+          undefined;
       }
 
       if (!next) {
@@ -312,9 +309,7 @@ export default function TypingClient({
 
       if (e.key === "Backspace") {
         setTyped((previousTyped) => previousTyped.slice(0, -1));
-        setCurrentIndex((previousIndex) =>
-          Math.max(previousIndex - 1, 0),
-        );
+        setCurrentIndex((previousIndex) => Math.max(previousIndex - 1, 0));
 
         return;
       }
@@ -323,16 +318,10 @@ export default function TypingClient({
        * A normal Tab inserts four spaces.
        */
       if (e.key === "Tab") {
-        setTyped((previousTyped) => [
-          ...previousTyped,
-          " ",
-          " ",
-          " ",
-          " ",
-        ]);
+        setTyped((previousTyped) => [...previousTyped, " ", " ", " ", " "]);
 
         setCurrentIndex((previousIndex) =>
-          Math.min(previousIndex + 4, code.length),
+          Math.min(previousIndex + 4, code.length)
         );
 
         return;
@@ -384,8 +373,7 @@ export default function TypingClient({
     }
 
     const rect = active.getBoundingClientRect();
-    const parentRect =
-      active.parentElement?.getBoundingClientRect();
+    const parentRect = active.parentElement?.getBoundingClientRect();
 
     if (!parentRect) {
       return;
@@ -412,22 +400,16 @@ export default function TypingClient({
     }
   }, [currentIndex]);
 
-  const elapsed =
-    startTime && endTime ? (endTime - startTime) / 1000 : 0;
+  const elapsed = startTime && endTime ? (endTime - startTime) / 1000 : 0;
 
   const correct = typed.filter(
-    (character, index) => character === code[index],
+    (character, index) => character === code[index]
   ).length;
 
   const accuracy =
-    typed.length === 0
-      ? 100
-      : Math.round((correct / typed.length) * 100);
+    typed.length === 0 ? 100 : Math.round((correct / typed.length) * 100);
 
-  const wpm =
-    elapsed === 0
-      ? 0
-      : ((correct / 5 / elapsed) * 60).toFixed(1);
+  const wpm = elapsed === 0 ? 0 : ((correct / 5 / elapsed) * 60).toFixed(1);
 
   return (
     <main className="mx-auto max-w-4xl py-8">
@@ -459,13 +441,9 @@ export default function TypingClient({
         )}
       </div>
 
-      <h1 className="text-3xl font-bold">
-        {currentSnippet.title}
-      </h1>
+      <h1 className="text-3xl font-bold">{currentSnippet.title}</h1>
 
-      <p className="text-muted-foreground">
-        {currentSnippet.pattern}
-      </p>
+      <p className="text-muted-foreground">{currentSnippet.pattern}</p>
 
       <div className="mt-10 flex items-center justify-center">
         <div className="relative">
@@ -485,8 +463,8 @@ export default function TypingClient({
                   index >= typed.length
                     ? "text-gray-400"
                     : typed[index] === character
-                      ? "text-muted-foreground"
-                      : "text-red-500 underline decoration-red-500"
+                    ? "text-muted-foreground"
+                    : "text-red-500 underline decoration-red-500"
                 }
               >
                 {character}
@@ -512,15 +490,11 @@ export default function TypingClient({
         <div className="space-y-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-3">
             <div className="flex gap-1">
-              <kbd className="rounded border px-2 py-1 text-xs">
-                Shift
-              </kbd>
+              <kbd className="rounded border px-2 py-1 text-xs">Shift</kbd>
 
               <span>+</span>
 
-              <kbd className="rounded border px-2 py-1 text-xs">
-                Tab
-              </kbd>
+              <kbd className="rounded border px-2 py-1 text-xs">Tab</kbd>
             </div>
 
             <span className="text-left">Next snippet</span>
@@ -528,29 +502,34 @@ export default function TypingClient({
 
           <div className="flex items-center gap-3">
             <div className="flex gap-1">
-              <kbd className="rounded border px-2 py-1 text-xs">
-                Ctrl
-              </kbd>
+              <kbd className="rounded border px-2 py-1 text-xs">Ctrl</kbd>
 
               <span>+</span>
 
-              <kbd className="rounded border px-2 py-1 text-xs">
-                Backspace
-              </kbd>
+              <kbd className="rounded border px-2 py-1 text-xs">Backspace</kbd>
             </div>
 
             <span>Delete previous word</span>
           </div>
 
           <div className="flex items-center gap-3">
-            <kbd className="rounded border px-2 py-1 text-xs">
-              Esc
-            </kbd>
+            <kbd className="rounded border px-2 py-1 text-xs">Esc</kbd>
 
             <span>Reset test</span>
           </div>
         </div>
       </div>
+      <p className="fixed bottom-4 right-4 m-0 px-3 py-2 text-[16px] ">
+        Have feedback?{" "}
+        <Link
+          href="https://discord.gg/JTNDUFfmN6"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-blue-600 underline underline-offset-2 transition-colors hover:text-blue-800"
+        >
+          Join the Discord
+        </Link>
+      </p>
     </main>
   );
 }
