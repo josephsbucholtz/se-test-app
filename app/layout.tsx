@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { Analytics } from "@vercel/analytics/next"
 import "./globals.css";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
@@ -18,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body>{children}</body>
+      <Analytics/>
     </html>
   );
 }
