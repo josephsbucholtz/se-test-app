@@ -318,11 +318,16 @@ export default function TypingClient({
        * A normal Tab inserts four spaces.
        */
       if (e.key === "Tab") {
-        setTyped((previousTyped) => [...previousTyped, " ", " ", " ", " "]);
+        let nextIndex = currentIndex;
+        const autoTyped: string[] = [];
 
-        setCurrentIndex((previousIndex) =>
-          Math.min(previousIndex + 4, code.length)
-        );
+        while ( nextIndex < code.length && (code[nextIndex] === " " || code[nextIndex] === "\t")) {
+          autoTyped.push(code[nextIndex]);
+          nextIndex++;
+        }
+
+        setTyped((previousTyped) => [...previousTyped, ...autoTyped]);
+        setCurrentIndex(nextIndex);
 
         return;
       }
@@ -331,9 +336,36 @@ export default function TypingClient({
         return;
       }
 
-      const key = e.key === "Enter" ? "\n" : e.key;
+      if (e.key === "Enter") {
+        if (code[currentIndex] !== "\n") {
+          return;
+        }
 
-      setTyped((previousTyped) => [...previousTyped, key]);
+        let nextIndex = currentIndex + 1;
+        const autoTyped = ["\n"];
+
+        while ( nextIndex < code.length && (code[nextIndex] === " " || code[nextIndex] === "\t")) {
+          autoTyped.push(code[nextIndex]);
+          nextIndex++;
+        }
+
+        setTyped((previousTyped) => [...previousTyped, ...autoTyped]);
+        setCurrentIndex(nextIndex);
+
+        if (nextIndex >= code.length) {
+          setEndTime(Date.now());
+          setFinished(true);
+        }
+
+        return;
+      }
+
+      // Normal character
+      if (e.key.length !== 1) {
+        return;
+      }
+
+      setTyped((previousTyped) => [...previousTyped, e.key]);
 
       setCurrentIndex((previousIndex) => {
         const nextIndex = previousIndex + 1;
@@ -348,7 +380,6 @@ export default function TypingClient({
         return nextIndex;
       });
     }
-
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
