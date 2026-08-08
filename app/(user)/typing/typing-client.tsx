@@ -504,6 +504,7 @@ export default function TypingClient({
           </pre>
         </div>
 
+      </div>
         {finished && (
           <Grade
             wpm={wpm.toString()}
@@ -511,7 +512,6 @@ export default function TypingClient({
             time={elapsed.toFixed(2)}
           />
         )}
-      </div>
 
       <div className="fixed right-12 top-1/3 hidden -translate-y-1/2 opacity-60 transition-opacity hover:opacity-100 lg:block">
         <h2 className="mb-4 text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground/70">
