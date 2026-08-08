@@ -1,11 +1,5 @@
 "use client";
 
-import { Gauge, Target, Timer } from "lucide-react";
-
-import { Dialog, DialogContent, } from "@/components/ui/dialog";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-
 type Props = {
   wpm: string;
   accuracy: number;
@@ -14,70 +8,32 @@ type Props = {
 
 export default function Grade({ wpm, accuracy, time }: Props) {
   return (
-    <Dialog open={true} onOpenChange={() => {}}>
-      <DialogContent
-        showCloseButton={false}
-        className="max-w-md gap-0 overflow-hidden border-border p-0 shadow-xl"
-      >
-        <Separator />
+    <div className="mt-10 grid w-full grid-cols-3 items-center border-t border-border bg-muted/40 px-6 py-5 text-center">
+      <div>
+        <p className="text-[15px] uppercase font-semibold">
+          WPM
+        </p>
+        <p className="text-amber-500 mt-1 text-2xl font-semibold">{wpm}</p>
+      </div>
 
-        <div className="grid grid-cols-3 gap-3 p-6">
-          <Card className="border-border bg-card shadow-none">
-            <CardContent className="flex flex-col items-center gap-3 p-4 text-center">
-              <Gauge className="size-5 text-muted-foreground" />
+      <div>
+        <p className="text-[15px] uppercase font-semibold">
+          Time
+        </p>
+        <p className="text-teal-600 mt-1 text-4xl font-extrabold">{time}s</p>
+      </div>
 
-              <div>
-                <p className="text-2xl font-bold tabular-nums">{wpm}</p>
-                <p className="mt-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  WPM
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border bg-card shadow-none">
-            <CardContent className="flex flex-col items-center gap-3 p-4 text-center">
-              <Target className="size-5 text-muted-foreground" />
-
-              <div>
-                <p className="text-2xl font-bold tabular-nums">
-                  {accuracy}
-                  <span className="text-base">%</span>
-                </p>
-                <p className="mt-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  Accuracy
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border bg-card shadow-none">
-            <CardContent className="flex flex-col items-center gap-3 p-4 text-center">
-              <Timer className="size-5 text-muted-foreground" />
-
-              <div>
-                <p className="text-2xl font-bold tabular-nums">
-                  {time}
-                  <span className="ml-0.5 text-sm">s</span>
-                </p>
-                <p className="mt-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  Time
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="border-t border-border bg-background px-6 py-4 text-center">
-          <p className="text-sm text-muted-foreground">
-            Press{" "}
-            <kbd className="pointer-events-none mx-1 inline-flex h-6 select-none items-center rounded-md border border-border bg-muted px-2 font-mono text-xs font-medium text-foreground">
-              Enter
-            </kbd>
-            to start a new test
-          </p>
-        </div>
-      </DialogContent>
-    </Dialog>
+      <div>
+        <p className="text-[15px] uppercase font-semibold">
+          Accuracy
+        </p>
+        <p className="text-amber-500 mt-1 text-2xl font-semibold">{accuracy}%</p>
+      </div>
+      <div></div>
+      <div className="mt-10 text-center text-muted-foreground/50">
+        <kbd className="bg-gray-100 rounded border px-2 py-1 text-[18px]">&gt; ENTER</kbd>
+        <span className="ml-2">to continue</span>
+      </div>
+    </div>
   );
 }

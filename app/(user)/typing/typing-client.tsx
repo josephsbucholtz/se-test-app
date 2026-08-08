@@ -318,11 +318,16 @@ export default function TypingClient({
        * A normal Tab inserts four spaces.
        */
       if (e.key === "Tab") {
-        setTyped((previousTyped) => [...previousTyped, " ", " ", " ", " "]);
+        let nextIndex = currentIndex;
+        const autoTyped: string[] = [];
 
-        setCurrentIndex((previousIndex) =>
-          Math.min(previousIndex + 4, code.length)
-        );
+        while ( nextIndex < code.length && (code[nextIndex] === " " || code[nextIndex] === "\t")) {
+          autoTyped.push(code[nextIndex]);
+          nextIndex++;
+        }
+
+        setTyped((previousTyped) => [...previousTyped, ...autoTyped]);
+        setCurrentIndex(nextIndex);
 
         return;
       }
@@ -331,9 +336,36 @@ export default function TypingClient({
         return;
       }
 
-      const key = e.key === "Enter" ? "\n" : e.key;
+      if (e.key === "Enter") {
+        if (code[currentIndex] !== "\n") {
+          return;
+        }
 
-      setTyped((previousTyped) => [...previousTyped, key]);
+        let nextIndex = currentIndex + 1;
+        const autoTyped = ["\n"];
+
+        while ( nextIndex < code.length && (code[nextIndex] === " " || code[nextIndex] === "\t")) {
+          autoTyped.push(code[nextIndex]);
+          nextIndex++;
+        }
+
+        setTyped((previousTyped) => [...previousTyped, ...autoTyped]);
+        setCurrentIndex(nextIndex);
+
+        if (nextIndex >= code.length) {
+          setEndTime(Date.now());
+          setFinished(true);
+        }
+
+        return;
+      }
+
+      // Normal character
+      if (e.key.length !== 1) {
+        return;
+      }
+
+      setTyped((previousTyped) => [...previousTyped, e.key]);
 
       setCurrentIndex((previousIndex) => {
         const nextIndex = previousIndex + 1;
@@ -348,7 +380,6 @@ export default function TypingClient({
         return nextIndex;
       });
     }
-
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
@@ -443,7 +474,7 @@ export default function TypingClient({
 
       <h1 className="text-3xl font-bold">{currentSnippet.title}</h1>
 
-      <p className="text-muted-foreground">{currentSnippet.pattern}</p>
+      <p className="text-muted-foreground opacity-60">{currentSnippet.pattern}</p>
 
       <div className="mt-10 flex items-center justify-center">
         <div className="relative">
@@ -473,6 +504,7 @@ export default function TypingClient({
           </pre>
         </div>
 
+      </div>
         {finished && (
           <Grade
             wpm={wpm.toString()}
@@ -480,7 +512,6 @@ export default function TypingClient({
             time={elapsed.toFixed(2)}
           />
         )}
-      </div>
 
       <div className="fixed right-12 top-1/3 hidden -translate-y-1/2 opacity-60 transition-opacity hover:opacity-100 lg:block">
         <h2 className="mb-4 text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground/70">
@@ -519,17 +550,6 @@ export default function TypingClient({
           </div>
         </div>
       </div>
-      <p className="fixed bottom-4 right-4 m-0 px-3 py-2 text-[16px] ">
-        Have feedback?{" "}
-        <Link
-          href="https://discord.gg/JTNDUFfmN6"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-medium text-blue-600 underline underline-offset-2 transition-colors hover:text-blue-800"
-        >
-          Join the Discord
-        </Link>
-      </p>
     </main>
   );
 }

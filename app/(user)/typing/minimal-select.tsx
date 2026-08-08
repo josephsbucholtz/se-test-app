@@ -37,7 +37,7 @@ export default function MinimalSelect<T extends string>({
 
   return (
     <div className="flex flex-col items-center gap-1">
-      <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50">
+      <span className="text-mauve-800 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">
         {label}
       </span>
 
