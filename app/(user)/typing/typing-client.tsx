@@ -519,17 +519,6 @@ export default function TypingClient({
           </div>
         </div>
       </div>
-      <p className="fixed bottom-4 right-4 m-0 px-3 py-2 text-[16px] ">
-        Have feedback?{" "}
-        <Link
-          href="https://discord.gg/JTNDUFfmN6"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-medium text-blue-600 underline underline-offset-2 transition-colors hover:text-blue-800"
-        >
-          Join the Discord
-        </Link>
-      </p>
     </main>
   );
 }
