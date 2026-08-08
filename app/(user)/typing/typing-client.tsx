@@ -474,7 +474,7 @@ export default function TypingClient({
 
       <h1 className="text-3xl font-bold">{currentSnippet.title}</h1>
 
-      <p className="text-muted-foreground">{currentSnippet.pattern}</p>
+      <p className="text-muted-foreground opacity-60">{currentSnippet.pattern}</p>
 
       <div className="mt-10 flex items-center justify-center">
         <div className="relative">
