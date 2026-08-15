@@ -24,11 +24,12 @@ export default async function UserLayout({
       <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
         <div className="relative mx-auto flex h-16 max-w-7xl items-center px-6">
           {/* App Title */}
-          <span
+          <Link
+            href="/home"
             className="text-xl font-bold tracking-tight"
           >
             Software Practice
-          </span>
+          </Link>
 
           {/* Center Navigation */}
           <div className="absolute left-1/2 -translate-x-1/2">
@@ -43,6 +44,16 @@ export default async function UserLayout({
                     </Link>
                 </NavigationMenuItem>
 
+                <NavigationMenuItem>
+                    <Link
+                      href="/testing"
+                      className="rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+                    >
+                    Testing{" "}
+                      <span className="italic text-amber-400">PREMIUM</span>
+                    </Link>
+
+                </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
           </div>

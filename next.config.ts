@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/',
-        destination: '/typing', // Change to your desired landing folder
+        destination: '/home', // Change to your desired landing folder
         permanent: true,       // Provides a 308 permanent redirect status
       },
     ];
