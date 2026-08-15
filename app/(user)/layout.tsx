@@ -24,11 +24,12 @@ export default async function UserLayout({
       <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
         <div className="relative mx-auto flex h-16 max-w-7xl items-center px-6">
           {/* App Title */}
-          <span
+          <Link
+            href="/home"
             className="text-xl font-bold tracking-tight"
           >
             Software Practice
-          </span>
+          </Link>
 
           {/* Center Navigation */}
           <div className="absolute left-1/2 -translate-x-1/2">
