@@ -91,19 +91,19 @@ export async function POST(request: Request) {
      * Do not import "@/lib/supabase/client" here because this is a
      * server-side route handler.
      */
-    const supabase = await createClient();
+    // const supabase = await createClient();
 
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
+    // const {
+    //   data: { user },
+    //   error: authError,
+    // } = await supabase.auth.getUser();
 
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: "You must be signed in to grade an answer." },
-        { status: 401 },
-      );
-    }
+    // if (authError || !user) {
+    //   return NextResponse.json(
+    //     { error: "You must be signed in to grade an answer." },
+    //     { status: 401 },
+    //   );
+    // }
 
     /*
      * Check the user's role with Prisma.
